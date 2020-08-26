@@ -4,6 +4,8 @@ A Python3 library for translating text using Google Translate API.
 ----
 ## Features
 
+  - **Dot accessible values**
+  - **Supports emoji**
   - **Asynchronous**
   - **Type hinted**
   - **Free to use**

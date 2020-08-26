@@ -1,13 +1,13 @@
 from .types import TranslatedObject
 from typing import Union
-import asyncio
 import httpx
+import json
 
 
 class Translator:
-    async def __call__(self, text: str, sourcelang: Union[str, list, tuple, dict] = 'auto',
-                       targetlang: Union[str, list, tuple, dict] = 'en', client: str = 'dict-chrome-ex', dt: str = 't',
-                       ):
+    async def __call__(self, text: str, sourcelang: str = 'auto', targetlang: str = 'en',
+                       client: str = 'dict-chrome-ex', dt: str = 't'):
+
         """
         A function that translates text.
 
@@ -15,16 +15,10 @@ class Translator:
             text: str = Text to translate.
 
 
-            sourcelang: Union[str, list, tuple, dict] = 'text' original language, pass 'auto' for auto detection (default: 'auto').
-
-                (If you pass a list or tuple, the input encoding (ie) will be sourcelang[1], example: ['auto', 'utf-8'];
-                 Otherwise you can pass a dict, and it will take 'ie' key as sourcelang['ie'], example: {'sl': 'auto', 'ie': 'utf-8'})
+            sourcelang: str = 'text' original language, pass 'auto' for auto detection (default: 'auto').
 
 
-            targetlang: Union[str, list, tuple, dict] = target language for translating 'text' (default: 'en').
-
-                (If you pass a list or tuple, the output encoding (oe) will be targetlang[1], example: ['en', 'utf-8'];
-                 Otherwise you can pass a dict, and it will take 'oe' key as targetlang['ie'], example: {'tl': 'en', 'ie': 'utf-8'})
+            targetlang: str = target language for translating 'text' (default: 'en').
 
 
             client: str = Google Translate client platform I guess, it's not well documented so I don't really know (default: 'dict-chrome-ex').
@@ -60,25 +54,27 @@ class Translator:
                     targetlang['tl'] if isinstance(targetlang, dict) else targetlang)).lower(),
                 'dt': dt,
                 'q': text,
-                'ie': (sourcelang[1] if isinstance(sourcelang, list) or isinstance(sourcelang, tuple) else (
-                    sourcelang['ie'] if isinstance(sourcelang, dict) else '')).lower(),
-                'oe': (targetlang[1] if isinstance(targetlang, list) or isinstance(targetlang, tuple) else (
-                    targetlang['oe'] if isinstance(targetlang, dict) else '')).lower()
+                'ie': 'utf-8',
+                'oe': 'utf-8'
             }.items()
             if v
         }
+        
         async with httpx.AsyncClient() as c:
-            r = await c.get('https://clients5.google.com/translate_a/t', params=params)
+            r = await c.post('https://clients5.google.com/translate_a/t', params=params)
             await c.__aexit__()
 
-        r = r.json()
+        r = json.loads(
+            r.content.decode('utf-8')
+        )
+
         if not client == "dict-chrome-ex":
             return r
 
         _tmp = {
             "raw": TranslatedObject(r),
-            "orig": "".join([s['orig'] for s in r['sentences'] if 'orig' in s]),
-            "text": "".join([s['trans'] for s in r['sentences'] if 'trans' in s]),
+            "orig": " ".join([s['orig'] for s in r['sentences'] if 'orig' in s]),
+            "text": " ".join([s['trans'] for s in r['sentences'] if 'trans' in s]),
             "orig_raw": [s['orig'] for s in r['sentences'] if 'orig' in s],
             "text_raw": [s['trans'] for s in r['sentences'] if 'trans' in s],
             "lang": r['src']
