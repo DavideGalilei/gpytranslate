@@ -23,7 +23,7 @@ $ python -m pip install gpytranslate
 ----
 ### Usage
 
-[Example:](https://github.com/DavideGalilei/gpytranslate/examples/example.py)
+[Example:](https://github.com/DavideGalilei/gpytranslate/blob/master/examples/example.py)
 ```
 from gpytranslate import Translator
 import asyncio
