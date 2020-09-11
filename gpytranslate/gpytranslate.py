@@ -73,8 +73,8 @@ class Translator:
 
         _tmp = {
             "raw": TranslatedObject(r),
-            "orig": " ".join([s['orig'] for s in r['sentences'] if 'orig' in s]),
-            "text": " ".join([s['trans'] for s in r['sentences'] if 'trans' in s]),
+            "orig": "".join(elem if not elem[-1] == '\n' else f" {elem}" for elem in (s['orig'] for s in r['sentences'] if 'orig' in s)),
+            "text": "".join(elem if not elem[-1] == '\n' else f" {elem}" for elem in (s['trans'] for s in r['sentences'] if 'trans' in s)),
             "orig_raw": [s['orig'] for s in r['sentences'] if 'orig' in s],
             "text_raw": [s['trans'] for s in r['sentences'] if 'trans' in s],
             "lang": r['src']
