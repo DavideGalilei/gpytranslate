@@ -67,7 +67,7 @@ class Translator:
         r = json.loads(
             r.content.decode('utf-8')
         )
-
+        
         if not client == "dict-chrome-ex":
             return r
 
