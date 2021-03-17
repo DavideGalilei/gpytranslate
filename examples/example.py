@@ -4,8 +4,8 @@ import asyncio
 
 async def main():
     tr = Translator()
-    translation = await tr("Ciao, come stai? Io bene, ahah.", targetlang='en')
-    language = await tr.detect("Ciao, come stai? Io bene, ahah.")
+    translation = await tr("🅱️🅱️ come va?", targetlang='en')
+    language = await tr.detect("Ciao come stai? Io bene ahah.")
     print(f"Translation: {translation.text}\nDetected language: {language}")
 
 
