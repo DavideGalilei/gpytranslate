@@ -19,14 +19,14 @@ Requirements:
 - Python 3.6 or higher.
 
 
-```
+``` bash
 $ python -m pip install gpytranslate
 ```
 ----
 ### Usage
 
 [Example:](https://github.com/DavideGalilei/gpytranslate/blob/master/examples/example.py)
-```
+``` python
 from gpytranslate import Translator
 import asyncio
 
