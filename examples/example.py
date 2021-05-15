@@ -1,5 +1,6 @@
-from gpytranslate import Translator
 import asyncio
+
+from gpytranslate import Translator
 
 
 async def main():
