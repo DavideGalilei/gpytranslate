@@ -32,15 +32,16 @@ import asyncio
 
 
 async def main():
-    tr = Translator()
-    translation = await tr("Ciao come stai? Io bene ahah.", targetlang='en')
-    language = await tr.detect("Ciao come stai? Io bene ahah.")
+    t = Translator()
+    translation = await t.translate("Ciao come stai? Io bene ahah.", targetlang="en")
+    language = await t.detect("Ciao come stai? Io bene ahah.")
     print(f"Translation: {translation.text}\nDetected language: {language}")
 
 
 if __name__ == "__main__":
     asyncio.run(main())
 ```
+❓ **Note:** you could also check [tests](https://github.com/DavideGalilei/gpytranslate/blob/master/tests/) folder for extra examples
 
 Output:
 ```
