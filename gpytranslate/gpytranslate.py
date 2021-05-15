@@ -112,15 +112,15 @@ class Translator:
                 )
             )
 
-            if client != "gtx" or dt != "t":
-                return raw
+        if client != "gtx" or dt != "t":
+            return raw
 
-            if isinstance(text, str):
-                return self.parse(raw)
-            elif isinstance(text, Mapping):
-                return {k: self.parse(v) for k, v in raw.items()}
-            else:
-                return [self.parse(elem) for elem in raw]
+        if isinstance(text, str):
+            return self.parse(raw)
+        elif isinstance(text, Mapping):
+            return {k: self.parse(v) for k, v in raw.items()}
+        else:
+            return [self.parse(elem) for elem in raw]
 
     @staticmethod
     def parse(
