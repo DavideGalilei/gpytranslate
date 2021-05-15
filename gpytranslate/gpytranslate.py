@@ -1,5 +1,5 @@
 from collections.abc import Mapping
-from typing import Union, Literal, Dict, List, Any
+from typing import Union, Literal, Dict, List, Any, Final
 
 import httpx
 
@@ -7,6 +7,8 @@ from .types import TranslatedObject
 
 
 class Translator:
+    __version__: Final[str] = "1.0.2"
+
     def __init__(
         self,
         proxies: Union[httpx.Proxy, Dict[str, str]] = None,
