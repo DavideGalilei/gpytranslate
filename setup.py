@@ -1,11 +1,11 @@
 import setuptools
 
-with open("README.md", "r") as fh:
+with open("README.md", "r", encoding="utf8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="gpytranslate",
-    version="0.3.1",
+    version="1.0.2",
     author="Davide Galilei",
     author_email="davidegalilei2018@gmail.com",
     description="A Python3 library for translating text using Google Translate API.",
@@ -18,8 +18,8 @@ setuptools.setup(
         "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires=">=3.6",
     install_requires=[
-   'httpx',
-    ]
+        "httpx",
+    ],
 )
