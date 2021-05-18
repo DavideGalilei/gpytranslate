@@ -1,31 +1,28 @@
-name: Python 3.6 compatibility
+name: Python "${{ matrix.version }}" compatibility
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ "dev", "master" ]
+  pull_request:
+    branches: [ "dev", "master" ]
 
 jobs:
   tests:
-    name: "Python ${{ matrix.python-version }}"
+    name: "Python ${{ matrix.version }}"
     runs-on: "ubuntu-latest"
 
     strategy:
       matrix:
-        python-version: [ "3.6", "3.7", "3.8", "3.9" ]
+        version: [ "3.6", "3.7", "3.8", "3.9" ]
 
     steps:
       - uses: "actions/checkout@v2"
       - uses: "actions/setup-python@v2"
         with:
-          python-version: "${{ matrix.python-version }}"
-
-      - name: Install Gpytranslate
+          python-version: "${{ matrix.version }}"
+      - name: "Install Gpytranslate"
         run: python setup.py install
-
-      - name: Install pytest
+      - name: "Install pytest"
         run: python -m pip install pytest-asyncio
-
-      - name: Run tests
-        run: |
-          cd tests
-          python -m unittest
+      - name: "Run tests"
+        run: python -m pytest tests
