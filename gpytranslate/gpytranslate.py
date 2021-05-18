@@ -1,5 +1,5 @@
 from collections.abc import Mapping
-from typing import Union, Literal, Dict, List, Any, Final
+from typing import Union, Dict, List, Any
 
 import httpx
 
@@ -7,7 +7,7 @@ from .types import TranslatedObject
 
 
 class Translator:
-    __version__: Final[str] = "1.0.2"
+    __version__: str = "1.0.3"
 
     def __init__(
         self,
@@ -24,7 +24,9 @@ class Translator:
         sourcelang: str = "auto",
         targetlang: str = "en",
         client: str = "gtx",
-        dt: Literal["t", "at", "rm", "bd", "md", "ss", "ex", "rw", "dj"] = "t",
+        dt: str = "t",
+        # Literal["t", "at", "rm", "bd", "md", "ss", "ex", "rw", "dj"] = "t",
+        # broken compatibility with python <3.8 :(
         dj: int = 1,
         **extra
     ) -> Union[TranslatedObject, List[TranslatedObject], Dict[str, TranslatedObject]]:
