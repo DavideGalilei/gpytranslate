@@ -1,4 +1,5 @@
-name: Python "${{ matrix.version }}" compatibility
+---
+name: Tests
 
 on:
   push:
@@ -8,7 +9,7 @@ on:
 
 jobs:
   tests:
-    name: "Python ${{ matrix.version }}"
+    name: "Python ${{ matrix.version }} compatibility"
     runs-on: "ubuntu-latest"
 
     strategy:
