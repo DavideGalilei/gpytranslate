@@ -1,17 +1,12 @@
-import unittest
+import pytest
+
 
 from gpytranslate import Translator
 
 
-class Test(unittest.IsolatedAsyncioTestCase):
-    async def test_detect(self):
-        translator = Translator()
-        language: str = await translator.detect(
-            text="Ciao Mondo."
-        )
+@pytest.mark.asyncio
+async def test_detect():
+    translator = Translator()
+    language: str = await translator.detect(text="Ciao Mondo.")
 
-        self.assertEqual(
-            language,
-            "it",
-            "Translations are not equal.",
-        )
+    assert language == "it", "Translations are not equal."
