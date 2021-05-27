@@ -3,12 +3,10 @@ from typing import Union, Dict, List, Any
 
 import httpx
 
-from .types import TranslatedObject
+from .types import TranslatedObject, BaseTranslator
 
 
-class Translator:
-    __version__: str = "1.0.3"
-
+class Translator(BaseTranslator):
     def __init__(
         self,
         proxies: Union[httpx.Proxy, Dict[str, str]] = None,
@@ -116,31 +114,7 @@ class Translator:
                 )
             )
 
-        if client != "gtx" or dt != "t":
-            return raw
-
-        if isinstance(text, str):
-            return self.parse(raw)
-        elif isinstance(text, Mapping):
-            return {k: self.parse(v) for k, v in raw.items()}
-        else:
-            return [self.parse(elem) for elem in raw]
-
-    @staticmethod
-    def parse(
-        raw: Union[dict, Mapping], translated: bool = True
-    ) -> Union[TranslatedObject, Dict[str, Union[TranslatedObject, str, List[str]]]]:
-        x = {
-            "raw": TranslatedObject(raw),
-            "orig": " ".join(s["orig"] for s in raw["sentences"] if "orig" in s),
-            "text": " ".join(s["trans"] for s in raw["sentences"] if "trans" in s),
-            "orig_raw": [s["orig"] for s in raw["sentences"] if "orig" in s],
-            "text_raw": [s["trans"] for s in raw["sentences"] if "trans" in s],
-            "lang": raw["src"],
-        }
-        if translated:
-            return TranslatedObject(x)
-        return x
+        return self.check(raw=raw, client=client, dt=dt, text=text)
 
     async def detect(self, text: Union[str, list, dict]):
         if isinstance(text, str):
