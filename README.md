@@ -3,7 +3,6 @@ A Python3 library for translating text using Google Translate API.
 
 ----
 ## Features
-
  - **Both Synchronous and Asynchronous**
  - **Dot accessible values**
  - **Supports emoji**
@@ -19,14 +18,14 @@ Requirements:
 - Python 3.6 or higher.
 
 
-``` bash
-$ python -m pip install gpytranslate
+```bash
+$ python3 -m pip install -U gpytranslate
 ```
 ----
 ### Usage
 
-[Async Example:](https://github.com/DavideGalilei/gpytranslate/blob/master/examples/async/example.py)
-``` python
+[Async Example:](/examples/async/example.py)
+```python
 from gpytranslate import Translator
 import asyncio
 
@@ -34,7 +33,7 @@ import asyncio
 async def main():
     t = Translator()
     translation = await t.translate("Ciao come stai? Io bene ahah.", targetlang="en")
-    language = await t.detect("Ciao come stai? Io bene ahah.")
+    language = await t.detect(translation.text)
     print(f"Translation: {translation.text}\nDetected language: {language}")
 
 
@@ -42,16 +41,16 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-[Sync Example:](https://github.com/DavideGalilei/gpytranslate/blob/master/examples/sync/example.py)
-``` python
+[Sync Example:](/examples/sync/example.py)
+```python
 from gpytranslate import SyncTranslator
 
 t = SyncTranslator()
 translation = t.translate("Ciao come stai? Io bene ahah.", targetlang="en")
-language = t.detect("Ciao come stai? Io bene ahah.")
+language = t.detect(translation.text)
 print(f"Translation: {translation.text}\nDetected language: {language}")
 ```
-❓ **Note:** you could also check [tests](https://github.com/DavideGalilei/gpytranslate/blob/master/tests/) folder for extra examples
+❓ **Note:** you could also check [tests](/tests) folder for extra examples.
 
 Output:
 ```
@@ -60,9 +59,10 @@ Detected language: it
 ```
 ----
 ## Development
-
 Want to contribute? Pull requests are accepted!
 
 ----
 ## License
-GNU GPLv3
+Licensed under the GNU GPLv3.
+
+Click [here](/LICENSE) for futher information.
