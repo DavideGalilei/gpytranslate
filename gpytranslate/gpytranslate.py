@@ -27,11 +27,13 @@ from .types import TranslatedObject, BaseTranslator
 class Translator(BaseTranslator):
     def __init__(
         self,
-        proxies: Union[httpx.Proxy, Dict[str, str]] = None,
+        proxies: Dict[str, str] = None,
         url: str = "https://translate.googleapis.com/translate_a/single",
         **options
     ):
         self.url = url
+        self.proxies = proxies
+        self.options = options
         self.client: httpx.AsyncClient = httpx.AsyncClient(proxies=proxies, **options)
 
     async def translate(
