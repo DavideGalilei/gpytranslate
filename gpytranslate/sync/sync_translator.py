@@ -19,7 +19,7 @@
 from collections.abc import Mapping
 from typing import Union, Dict, List, Any
 
-import requests
+import httpx
 
 from ..types import TranslatedObject, BaseTranslator
 
@@ -31,10 +31,10 @@ class SyncTranslator(BaseTranslator):
         url: str = "https://translate.googleapis.com/translate_a/single",
         **options
     ):
-        super().__init__()
         self.url = url
         self.proxies = proxies
         self.options = options
+        self.client: httpx.Client = httpx.Client(proxies=proxies, **options)
 
     def translate(
         self,
@@ -99,38 +99,33 @@ class SyncTranslator(BaseTranslator):
             }.items()
             if v
         }
-        raw: Union[Mapping, List] = (
-            (
-                requests.post(
-                    self.url,
-                    params={**params, "q": text},
-                    proxies=self.proxies,
-                    **self.options,
+        with self.client as c:
+            raw: Union[Mapping, List] = (
+                (
+                    c.post(
+                        self.url,
+                        params={**params, "q": text},
+                    )
+                ).json()
+                if isinstance(text, str)
+                else (
+                    {
+                        k: c.post(
+                            self.url,
+                            params={**params, "q": v},
+                        ).json()
+                        for k, v in text.items()
+                    }
+                    if isinstance(text, Mapping)
+                    else [
+                        c.post(
+                            self.url,
+                            params={**params, "q": elem},
+                        ).json()
+                        for elem in text
+                    ]
                 )
-            ).json()
-            if isinstance(text, str)
-            else (
-                {
-                    k: requests.post(
-                        self.url,
-                        params={**params, "q": v},
-                        proxies=self.proxies,
-                        **self.options,
-                    ).json()
-                    for k, v in text.items()
-                }
-                if isinstance(text, Mapping)
-                else [
-                    requests.post(
-                        self.url,
-                        params={**params, "q": elem},
-                        proxies=self.proxies,
-                        **self.options,
-                    ).json()
-                    for elem in text
-                ]
             )
-        )
 
         return self.check(raw=raw, client=client, dt=dt, text=text)
 
