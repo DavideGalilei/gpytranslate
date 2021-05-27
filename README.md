@@ -4,12 +4,12 @@ A Python3 library for translating text using Google Translate API.
 ----
 ## Features
 
-  - **Dot accessible values**
-  - **Supports emoji**
-  - **Asynchronous**
-  - **Type hinted**
-  - **Free to use**
-  - **Easy**
+ - **Both Synchronous and Asynchronous**
+ - **Dot accessible values**
+ - **Supports emoji**
+ - **Type hinted**
+ - **Free to use**
+ - **Easy**
 
 ----
 ## Quick Start
@@ -25,7 +25,7 @@ $ python -m pip install gpytranslate
 ----
 ### Usage
 
-[Example:](https://github.com/DavideGalilei/gpytranslate/blob/master/examples/example.py)
+[Async Example:](https://github.com/DavideGalilei/gpytranslate/blob/master/examples/async/example.py)
 ``` python
 from gpytranslate import Translator
 import asyncio
@@ -40,6 +40,16 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+```
+
+[Sync Example:](https://github.com/DavideGalilei/gpytranslate/blob/master/examples/sync/example.py)
+``` python
+from gpytranslate import SyncTranslator
+
+t = SyncTranslator()
+translation = t.translate("Ciao come stai? Io bene ahah.", targetlang="en")
+language = t.detect("Ciao come stai? Io bene ahah.")
+print(f"Translation: {translation.text}\nDetected language: {language}")
 ```
 ❓ **Note:** you could also check [tests](https://github.com/DavideGalilei/gpytranslate/blob/master/tests/) folder for extra examples
 
