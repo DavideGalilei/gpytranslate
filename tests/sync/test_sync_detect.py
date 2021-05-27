@@ -16,26 +16,11 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-import json
-
-from typing import Union
+from gpytranslate import SyncTranslator
 
 
-class TranslatedObject(dict):
-    def __getattr__(self: Union[str, dict, list], attr: str):
-        if isinstance(self, list):
-            return [TranslatedObject(elem) for elem in self]
-        return (
-            TranslatedObject(dict.get(self, attr))
-            if isinstance(dict.get(self, attr), dict)
-            else dict.get(self, attr)
-        )
+def test_sync_detect():
+    translator = SyncTranslator()
+    language: str = translator.detect(text="Ciao Mondo.")
 
-    def __str__(self):
-        return json.dumps(
-            {k: v if len(str(v)) < 200 else "..." for k, v in self.items()}, indent=4
-        )
-
-    __setattr__ = dict.__setitem__
-
-    __delattr__ = dict.__delitem__
+    assert language == "it", "Translations are not equal."

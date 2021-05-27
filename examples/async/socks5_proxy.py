@@ -16,26 +16,22 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-import json
+import asyncio
 
-from typing import Union
+from httpx_socks import AsyncProxyTransport
+
+from gpytranslate import Translator
 
 
-class TranslatedObject(dict):
-    def __getattr__(self: Union[str, dict, list], attr: str):
-        if isinstance(self, list):
-            return [TranslatedObject(elem) for elem in self]
-        return (
-            TranslatedObject(dict.get(self, attr))
-            if isinstance(dict.get(self, attr), dict)
-            else dict.get(self, attr)
-        )
+async def main():
+    t = Translator(
+        transport=AsyncProxyTransport.from_url("socks5://user:password@127.0.0.1:1080")
+    )
+    # Check out https://pypi.org/project/httpx-socks/
+    translation = await t.translate("Ciao Mondo!", targetlang="en")
+    # Hello World!
+    print(f"Translation: {translation.text}")
 
-    def __str__(self):
-        return json.dumps(
-            {k: v if len(str(v)) < 200 else "..." for k, v in self.items()}, indent=4
-        )
 
-    __setattr__ = dict.__setitem__
-
-    __delattr__ = dict.__delitem__
+if __name__ == "__main__":
+    asyncio.run(main())

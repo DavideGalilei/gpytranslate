@@ -21,10 +21,10 @@ from typing import Union, Dict, List, Any
 
 import httpx
 
-from .types import TranslatedObject, BaseTranslator
+from ..types import TranslatedObject, BaseTranslator
 
 
-class Translator(BaseTranslator):
+class SyncTranslator(BaseTranslator):
     def __init__(
         self,
         proxies: Dict[str, str] = None,
@@ -34,17 +34,15 @@ class Translator(BaseTranslator):
         self.url = url
         self.proxies = proxies
         self.options = options
-        self.client: httpx.AsyncClient = httpx.AsyncClient(proxies=proxies, **options)
+        self.client: httpx.Client = httpx.Client(proxies=proxies, **options)
 
-    async def translate(
+    def translate(
         self,
         text: Union[str, List[str], Dict[Any, str], Mapping],
         sourcelang: str = "auto",
         targetlang: str = "en",
         client: str = "gtx",
         dt: str = "t",
-        # Literal["t", "at", "rm", "bd", "md", "ss", "ex", "rw", "dj"] = "t",
-        # broken compatibility with python <3.8 :(
         dj: int = 1,
         **extra
     ) -> Union[TranslatedObject, List[TranslatedObject], Dict[str, TranslatedObject]]:
@@ -101,11 +99,10 @@ class Translator(BaseTranslator):
             }.items()
             if v
         }
-        async with self.client as c:
-            c: httpx.AsyncClient
+        with self.client as c:
             raw: Union[Mapping, List] = (
                 (
-                    await c.post(
+                    c.post(
                         self.url,
                         params={**params, "q": text},
                     )
@@ -113,21 +110,17 @@ class Translator(BaseTranslator):
                 if isinstance(text, str)
                 else (
                     {
-                        k: (
-                            await c.post(
-                                self.url,
-                                params={**params, "q": v},
-                            )
+                        k: c.post(
+                            self.url,
+                            params={**params, "q": v},
                         ).json()
                         for k, v in text.items()
                     }
                     if isinstance(text, Mapping)
                     else [
-                        (
-                            await c.post(
-                                self.url,
-                                params={**params, "q": elem},
-                            )
+                        c.post(
+                            self.url,
+                            params={**params, "q": elem},
                         ).json()
                         for elem in text
                     ]
@@ -136,14 +129,14 @@ class Translator(BaseTranslator):
 
         return self.check(raw=raw, client=client, dt=dt, text=text)
 
-    async def detect(self, text: Union[str, list, dict]):
+    def detect(self, text: Union[str, list, dict]):
         if isinstance(text, str):
-            return (await self(text)).lang
+            return self(text).lang
         elif isinstance(text, list):
-            return [(await self(elem)).lang for elem in text]
+            return [self(elem).lang for elem in text]
         elif isinstance(text, dict):
-            return {k: (await self(v)).lang for k, v in text.items()}
+            return {k: self(v).lang for k, v in text.items()}
         else:
             raise ValueError("Language detection works only with str, list and dict")
 
-    __call__ = translate  # Backwards compatibility
+    __call__ = translate
