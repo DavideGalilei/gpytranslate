@@ -86,6 +86,7 @@ class SyncTranslator(BaseTranslator):
                 requests.post(
                     self.url,
                     params={**params, "q": text},
+                    proxies=self.proxies,
                     **self.options,
                 )
             ).json()
@@ -95,6 +96,7 @@ class SyncTranslator(BaseTranslator):
                     k: requests.post(
                         self.url,
                         params={**params, "q": v},
+                        proxies=self.proxies,
                         **self.options,
                     ).json()
                     for k, v in text.items()
@@ -104,6 +106,7 @@ class SyncTranslator(BaseTranslator):
                     requests.post(
                         self.url,
                         params={**params, "q": elem},
+                        proxies=self.proxies,
                         **self.options,
                     ).json()
                     for elem in text
