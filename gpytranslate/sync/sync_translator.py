@@ -17,11 +17,11 @@
 """
 
 from collections.abc import Mapping
-from typing import Union, Dict, List, Any
+from typing import Union, Dict, List, Any, BinaryIO
 
 import httpx
 
-from ..types import TranslatedObject, BaseTranslator
+from ..types import TranslatedObject, BaseTranslator, BASE_HEADERS
 
 
 class SyncTranslator(BaseTranslator):
@@ -29,11 +29,15 @@ class SyncTranslator(BaseTranslator):
         self,
         proxies: Dict[str, str] = None,
         url: str = "https://translate.googleapis.com/translate_a/single",
+        tts_url: str = "https://translate.google.com/translate_tts",
+        headers: dict = ...,
         **options
     ):
         self.url = url
+        self.tts_url = tts_url
         self.proxies = proxies
         self.options = options
+        self.headers = BASE_HEADERS if headers is Ellipsis else headers
         self.client: httpx.Client = httpx.Client(proxies=proxies, **options)
 
     def translate(
@@ -97,7 +101,7 @@ class SyncTranslator(BaseTranslator):
                 "dj": dj,
                 **extra,
             }.items()
-            if v
+            if v is not None
         }
         with self.client as c:
             raw: Union[Mapping, List] = (
@@ -105,6 +109,7 @@ class SyncTranslator(BaseTranslator):
                     c.post(
                         self.url,
                         params={**params, "q": text},
+                        headers=self.headers,
                     )
                 ).json()
                 if isinstance(text, str)
@@ -113,6 +118,7 @@ class SyncTranslator(BaseTranslator):
                         k: c.post(
                             self.url,
                             params={**params, "q": v},
+                            headers=self.headers,
                         ).json()
                         for k, v in text.items()
                     }
@@ -121,6 +127,7 @@ class SyncTranslator(BaseTranslator):
                         c.post(
                             self.url,
                             params={**params, "q": elem},
+                            headers=self.headers,
                         ).json()
                         for elem in text
                     ]
@@ -138,5 +145,37 @@ class SyncTranslator(BaseTranslator):
             return {k: self(v).lang for k, v in text.items()}
         else:
             raise ValueError("Language detection works only with str, list and dict")
+
+    def tts(
+        self,
+        text: Union[str, List[str], Dict[Any, str], Mapping],
+        file: BinaryIO,
+        targetlang: str = "en",
+        client: str = "at",
+        idx: int = 0,
+        prev: str = "input",
+        chunk_size: int = 1024,
+        textlen: int = None,
+        **extra
+    ) -> BinaryIO:
+        params = self.parse_tts(
+            client=client,
+            targetlang=targetlang,
+            idx=idx,
+            prev=prev,
+            text=text,
+            textlen=textlen,
+            extra=extra,
+        )
+        with httpx.stream(
+            "GET",
+            url=self.tts_url,
+            params=params,
+            headers=self.headers,
+        ) as response:
+            response: httpx.Response
+            for chunk in response.iter_bytes(chunk_size=chunk_size):
+                file.write(chunk)
+        return file
 
     __call__ = translate

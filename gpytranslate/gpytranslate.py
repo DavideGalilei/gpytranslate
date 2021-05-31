@@ -15,13 +15,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
-
+import io
 from collections.abc import Mapping
 from typing import Union, Dict, List, Any
 
 import httpx
+from aiofiles.threadpool import AsyncBufferedIOBase
 
-from .types import TranslatedObject, BaseTranslator
+from .types import TranslatedObject, BaseTranslator, BASE_HEADERS
 
 
 class Translator(BaseTranslator):
@@ -29,11 +30,15 @@ class Translator(BaseTranslator):
         self,
         proxies: Dict[str, str] = None,
         url: str = "https://translate.googleapis.com/translate_a/single",
+        tts_url: str = "https://translate.google.com/translate_tts",
+        headers: dict = ...,
         **options
     ):
         self.url = url
+        self.tts_url = tts_url
         self.proxies = proxies
         self.options = options
+        self.headers = BASE_HEADERS if headers is Ellipsis else headers
         self.client: httpx.AsyncClient = httpx.AsyncClient(proxies=proxies, **options)
 
     async def translate(
@@ -99,7 +104,7 @@ class Translator(BaseTranslator):
                 "dj": dj,
                 **extra,
             }.items()
-            if v
+            if v is not None
         }
         async with self.client as c:
             c: httpx.AsyncClient
@@ -108,6 +113,7 @@ class Translator(BaseTranslator):
                     await c.post(
                         self.url,
                         params={**params, "q": text},
+                        headers=self.headers,
                     )
                 ).json()
                 if isinstance(text, str)
@@ -117,6 +123,7 @@ class Translator(BaseTranslator):
                             await c.post(
                                 self.url,
                                 params={**params, "q": v},
+                                headers=self.headers,
                             )
                         ).json()
                         for k, v in text.items()
@@ -127,6 +134,7 @@ class Translator(BaseTranslator):
                             await c.post(
                                 self.url,
                                 params={**params, "q": elem},
+                                headers=self.headers,
                             )
                         ).json()
                         for elem in text
@@ -145,5 +153,42 @@ class Translator(BaseTranslator):
             return {k: (await self(v)).lang for k, v in text.items()}
         else:
             raise ValueError("Language detection works only with str, list and dict")
+
+    async def tts(
+        self,
+        text: Union[str, List[str], Dict[Any, str], Mapping],
+        file: Union[AsyncBufferedIOBase, io.BytesIO],
+        targetlang: str = "en",
+        client: str = "at",
+        idx: int = 0,
+        prev: str = "input",
+        chunk_size: int = 1024,
+        textlen: int = None,
+        **extra
+    ) -> AsyncBufferedIOBase:
+        params = self.parse_tts(
+            client=client,
+            targetlang=targetlang,
+            idx=idx,
+            prev=prev,
+            text=text,
+            textlen=textlen,
+            extra=extra,
+        )
+        async with self.client.stream(
+            "GET",
+            url=self.tts_url,
+            params=params,
+            headers=self.headers,
+        ) as response:
+            response: httpx.Response
+            if isinstance(file, io.BytesIO):
+                async for chunk in response.aiter_bytes(chunk_size=chunk_size):
+                    file.write(chunk)
+            else:
+                file: AsyncBufferedIOBase
+                async for chunk in response.aiter_bytes(chunk_size=chunk_size):
+                    await file.write(chunk)
+        return file
 
     __call__ = translate  # Backwards compatibility
