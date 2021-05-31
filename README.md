@@ -25,7 +25,7 @@ $ python3 -m pip install -U gpytranslate
 ### Usage
 
 [Async Example:](/examples/async/example.py)
-```python3
+```python
 from gpytranslate import Translator
 import asyncio
 
@@ -42,7 +42,7 @@ if __name__ == "__main__":
 ```
 
 [Sync Example:](/examples/sync/example.py)
-```python3
+```python
 from gpytranslate import SyncTranslator
 
 t = SyncTranslator()
@@ -56,6 +56,31 @@ Output:
 ```
 Translation: Hello how are you? I'm fine, haha.
 Detected language: en
+```
+
+### Text to Speech
+[Async Example:](/examples/async/tts.py)
+```python
+import asyncio, aiofiles
+from gpytranslate import Translator
+
+async def main():
+    translator = Translator()
+    async with aiofiles.open("test.mp3", "wb") as file:
+        await translator.tts("Hello world!", file=file)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+[Sync Example:](/examples/sync/tts.py)
+```python
+from gpytranslate import SyncTranslator
+
+translator = SyncTranslator()
+
+with open("test.mp3", "wb") as file:
+    translator.tts("Hello world!", file=file)
 ```
 ----
 ## Development
