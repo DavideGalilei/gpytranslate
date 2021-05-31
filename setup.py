@@ -1,7 +1,5 @@
 import setuptools
 
-from gpytranslate import __version__
-
 with open("README.md", "r", encoding="utf8") as readme, open(
         "requirements.txt", "r", encoding="utf8"
 ) as requirements:
@@ -10,7 +8,7 @@ with open("README.md", "r", encoding="utf8") as readme, open(
 
 setuptools.setup(
     name="gpytranslate",
-    version=__version__,
+    version="1.2.0",
     author="Davide Galilei",
     author_email="davidegalilei2018@gmail.com",
     description="A Python3 library for translating text using Google Translate API.",
