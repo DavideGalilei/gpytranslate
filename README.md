@@ -25,7 +25,7 @@ $ python3 -m pip install -U gpytranslate
 ### Usage
 
 [Async Example:](/examples/async/example.py)
-```python
+```python3
 from gpytranslate import Translator
 import asyncio
 
@@ -42,7 +42,7 @@ if __name__ == "__main__":
 ```
 
 [Sync Example:](/examples/sync/example.py)
-```python
+```python3
 from gpytranslate import SyncTranslator
 
 t = SyncTranslator()
@@ -55,7 +55,7 @@ print(f"Translation: {translation.text}\nDetected language: {language}")
 Output:
 ```
 Translation: Hello how are you? I'm fine, haha.
-Detected language: it
+Detected language: en
 ```
 ----
 ## Development
@@ -65,4 +65,4 @@ Want to contribute? Pull requests are accepted!
 ## License
 Licensed under the GNU GPLv3.
 
-Click [here](/LICENSE) for futher information.
+Click [here](/LICENSE) for further information.
