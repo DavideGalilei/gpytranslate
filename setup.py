@@ -1,14 +1,14 @@
 import setuptools
 
 with open("README.md", "r", encoding="utf8") as readme, open(
-    "requirements.txt", "r", encoding="utf8"
+        "requirements.txt", "r", encoding="utf8"
 ) as requirements:
     long_description = readme.read()
     requires = requirements.read().splitlines(keepends=False)
 
 setuptools.setup(
     name="gpytranslate",
-    version="1.1.0",
+    version="1.2.0",
     author="Davide Galilei",
     author_email="davidegalilei2018@gmail.com",
     description="A Python3 library for translating text using Google Translate API.",

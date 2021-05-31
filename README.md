@@ -55,7 +55,32 @@ print(f"Translation: {translation.text}\nDetected language: {language}")
 Output:
 ```
 Translation: Hello how are you? I'm fine, haha.
-Detected language: it
+Detected language: en
+```
+
+### Text to Speech
+[Async Example:](/examples/async/tts.py)
+```python
+import asyncio, aiofiles
+from gpytranslate import Translator
+
+async def main():
+    translator = Translator()
+    async with aiofiles.open("test.mp3", "wb") as file:
+        await translator.tts("Hello world!", file=file)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+[Sync Example:](/examples/sync/tts.py)
+```python
+from gpytranslate import SyncTranslator
+
+translator = SyncTranslator()
+
+with open("test.mp3", "wb") as file:
+    translator.tts("Hello world!", file=file)
 ```
 ----
 ## Development
@@ -65,4 +90,4 @@ Want to contribute? Pull requests are accepted!
 ## License
 Licensed under the GNU GPLv3.
 
-Click [here](/LICENSE) for futher information.
+Click [here](/LICENSE) for further information.
