@@ -55,3 +55,29 @@ class BaseTranslator:
             return {k: self.parse(v) for k, v in raw.items()}
         else:
             return [self.parse(elem) for elem in raw]
+
+    @staticmethod
+    def parse_tts(
+        client: str,
+        targetlang: str,
+        idx: int,
+        prev: str,
+        text: str,
+        textlen: int,
+        extra: dict,
+    ) -> Dict[str, Union[str, int]]:
+        return {
+            k: v
+            for k, v in {
+                "client": client,
+                "tl": targetlang,
+                "ie": "utf-8",
+                "oe": "utf-8",
+                "idx": idx,
+                "prev": prev,
+                "textlen": len(text) if textlen is None else textlen,
+                "q": text,
+                **extra,
+            }.items()
+            if v is not None
+        }
