@@ -22,26 +22,23 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 """
+import asyncio
 
-import io
-import os.path
-
-from gpytranslate import SyncTranslator
+import pytest
 
 
-def test_sync_tts():
-    translator = SyncTranslator()
-    filename = "test.mp3"
-
-    with open(filename, "wb") as file:
-        translator.tts("Hello world!", file=file, targetlang="en")
-
-    assert os.path.isfile(filename), "File doesn't exist"
-    os.remove(filename)
+from gpytranslate import Translator
 
 
-def test_sync_tts_bytesio():
-    translator = SyncTranslator()
-    file = io.BytesIO()
+@pytest.mark.asyncio
+async def test_gather():
+    translator = Translator()
+    tasks = [
+        translator.translate("Hello world!", targetlang="it"),
+        translator.translate("Ciao mondo!", targetlang="en"),
+    ]
 
-    translator.tts("Hello world!", file=file, targetlang="en")
+    results = await asyncio.gather(*tasks)
+
+    assert results[0].text.lower() == "ciao mondo!", "Translation is wrong"
+    assert results[1].text.lower() == "hello world!", "Translation is wrong"

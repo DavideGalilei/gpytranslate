@@ -88,6 +88,6 @@ Want to contribute? Pull requests are accepted!
 
 ----
 ## License
-Licensed under the GNU GPLv3.
+Licensed under the MIT License.
 
 Click [here](/LICENSE) for further information.
