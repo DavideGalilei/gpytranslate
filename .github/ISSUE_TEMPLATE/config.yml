@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "Bug report"
+    url: https://github.com/DavideGalilei/gpytranslate/issues/new/choose
+    about: Create a report to help us improve our library.
+  - name: "Feature request"
+    url: https://github.com/DavideGalilei/gpytranslate/issues/new/choose
+    about: Make a feature request for our library.
+  - name: Help
+    url: https://github.com/DavideGalilei/gpytranslate/examples
+    about: We offer example code to better understand how to start using our library.

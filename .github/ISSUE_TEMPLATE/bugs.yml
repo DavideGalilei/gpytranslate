@@ -1,0 +1,40 @@
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+labels: [bug]
+assignees:
+  - DavideGalilei
+  - alsoGAMER
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also, tell us what did you expect to happen?
+      placeholder: I've encountered a bug!
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: OS / Environment
+      description: In which OS and Environment are you running our software?
+      placeholder: ArchLinux x86_64, Python 3.9.6, Gpytranslate 1.3.0 using a venv
+    validations:
+      required: true
+  - type: textarea
+    id: traceback
+    attributes:
+      label: Traceback
+      description: Please copy and paste any relevant traceback. This will be automatically formatted into code, so no need for backticks.
+      render: python-traceback
+  - type: checkboxes
+    id: search
+    attributes:
+      label: Searched before submitting
+      description: I've already tried to find a solution on my own.
+      options:
+        - label: I searched for duplicates, and didn't found anything.
+          required: true
+        - label: I searched this bug on a search engine, and didn't found anything.
+          required: true
