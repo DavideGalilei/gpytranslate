@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
   - name: Help
-    url: https://github.com/DavideGalilei/gpytranslate/examples
+    url: https://github.com/DavideGalilei/gpytranslate#usage
     about: We offer example code to better understand how to start using our library.
