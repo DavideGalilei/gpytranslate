@@ -1,0 +1,23 @@
+name: Feature request
+description: Suggest a new feature to implement
+title: "[FR]: "
+labels: [enhancement]
+assignees:
+  - DavideGalilei
+  - alsoGAMER
+body:
+  - type: textarea
+    id: which-feature
+    attributes:
+      label: Which feature?
+      description: Tell us which feature you want see implemented.
+      placeholder: Speech recognition!
+    validations:
+      required: true
+  - type: checkboxes
+    id: search
+    attributes:
+      label: Searched before submitting
+      options:
+        - label: I searched for duplicates, and didn't found anything.
+          required: true
