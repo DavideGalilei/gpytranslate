@@ -10,7 +10,7 @@ body:
     id: which-feature
     attributes:
       label: Which feature?
-      description: Tell us which feature you want see implemented.
+      description: Tell us which feature you want to see implemented.
       placeholder: Speech recognition!
     validations:
       required: true
