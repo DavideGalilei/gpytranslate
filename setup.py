@@ -25,9 +25,14 @@
 
 import setuptools
 
-with open("README.md", "r", encoding="utf8") as readme, open(
-    "requirements.txt", "r", encoding="utf8"
-) as requirements:
+from pathlib import Path
+
+root: Path = Path(__file__).parent.resolve()
+readme_path: Path = root / "README.md"
+requirements_path: Path = root / "requirements.txt"
+
+with readme_path.open(encoding="utf8") as readme,\
+        requirements_path.open(encoding="utf8") as requirements:
     long_description = readme.read()
     requires = requirements.read().splitlines(keepends=False)
 
