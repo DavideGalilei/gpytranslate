@@ -30,6 +30,8 @@ from .translated_object import TranslatedObject
 
 
 class BaseTranslator:
+    headers: Union[dict, callable]
+
     @staticmethod
     def parse(
         raw: Union[dict, Mapping], translated: bool = True
@@ -62,6 +64,9 @@ class BaseTranslator:
             return {k: self.parse(v) for k, v in raw.items()}
         else:
             return [self.parse(elem) for elem in raw]
+
+    def get_headers(self) -> dict:
+        return self.headers() if callable(self.headers) else self.headers
 
     @staticmethod
     def parse_tts(

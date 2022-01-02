@@ -23,12 +23,14 @@
     SOFTWARE.
 """
 
+from contextlib import closing
 from collections.abc import Mapping
 from typing import Union, Dict, List, Any, BinaryIO
 
 import httpx
 
-from ..types import TranslatedObject, BaseTranslator, BASE_HEADERS
+from ..exceptions import TranslationError
+from ..types import TranslatedObject, BaseTranslator, get_base_headers
 
 
 class SyncTranslator(BaseTranslator):
@@ -37,14 +39,14 @@ class SyncTranslator(BaseTranslator):
         proxies: Dict[str, str] = None,
         url: str = "https://translate.googleapis.com/translate_a/single",
         tts_url: str = "https://translate.google.com/translate_tts",
-        headers: dict = ...,
+        headers: Union[dict, callable] = ...,
         **options
     ):
         self.url = url
         self.tts_url = tts_url
         self.proxies = proxies
         self.options = options
-        self.headers = BASE_HEADERS if headers is Ellipsis else headers
+        self.headers = get_base_headers if headers is Ellipsis else headers
 
     def translate(
         self,
@@ -64,7 +66,7 @@ class SyncTranslator(BaseTranslator):
             text: str = Text to translate.
 
 
-            sourcelang: str = "text" original language, pass "auto" for auto detection (default: "auto").
+            sourcelang: str = "text" original language, pass "auto" for auto-detection (default: "auto").
 
 
             targetlang: str = target language for translating "text" (default: "en").
@@ -74,7 +76,7 @@ class SyncTranslator(BaseTranslator):
                 (Will return the raw API json if "client" is not "gtx")
 
 
-            dt: str = Specifies what to return in the API reply (default: "t").
+            dt: str = Specifies what to return to the API reply (default: "t").
                 (Will return the raw API json if "dt" is not "t".
                 t - Translation of source text;
                 at - Alternate translations;
@@ -109,37 +111,39 @@ class SyncTranslator(BaseTranslator):
             }.items()
             if v is not None
         }
-        with httpx.Client(proxies=self.proxies, **self.options) as c:
-            raw: Union[Mapping, List] = (
-                c.post(
-                    self.url,
-                    params={**params, "q": text},
-                    headers=self.headers,
-                ).json()
-                if isinstance(text, str)
-                else (
-                    {
-                        k: c.post(
-                            self.url,
-                            params={**params, "q": v},
-                            headers=self.headers,
-                        ).json()
-                        for k, v in text.items()
-                    }
-                    if isinstance(text, Mapping)
-                    else [
-                        c.post(
-                            self.url,
-                            params={**params, "q": elem},
-                            headers=self.headers,
-                        ).json()
-                        for elem in text
-                    ]
+        try:
+            with closing(httpx.Client(proxies=self.proxies, **self.options)) as c:
+                raw: Union[Mapping, List] = (
+                    c.post(
+                        self.url,
+                        params={**params, "q": text},
+                        headers=self.get_headers(),
+                    ).json()
+                    if isinstance(text, str)
+                    else (
+                        {
+                            k: c.post(
+                                self.url,
+                                params={**params, "q": v},
+                                headers=self.get_headers(),
+                            ).json()
+                            for k, v in text.items()
+                        }
+                        if isinstance(text, Mapping)
+                        else [
+                            c.post(
+                                self.url,
+                                params={**params, "q": elem},
+                                headers=self.get_headers(),
+                            ).json()
+                            for elem in text
+                        ]
+                    )
                 )
-            )
-            c.close()
 
-        return self.check(raw=raw, client=client, dt=dt, text=text)
+            return self.check(raw=raw, client=client, dt=dt, text=text)
+        except Exception as e:
+            raise TranslationError(e) from None
 
     def detect(self, text: Union[str, list, dict]):
         if isinstance(text, str):
@@ -172,15 +176,18 @@ class SyncTranslator(BaseTranslator):
             textlen=textlen,
             extra=extra,
         )
-        with httpx.stream(
-            "GET",
-            url=self.tts_url,
-            params=params,
-            headers=self.headers,
-        ) as response:
-            response: httpx.Response
-            for chunk in response.iter_bytes(chunk_size=chunk_size):
-                file.write(chunk)
-        return file
+        try:
+            with httpx.stream(
+                "GET",
+                url=self.tts_url,
+                params=params,
+                headers=self.get_headers(),
+            ) as response:
+                response: httpx.Response
+                for chunk in response.iter_bytes(chunk_size=chunk_size):
+                    file.write(chunk)
+            return file
+        except Exception as e:
+            raise TranslationError(e) from None
 
     __call__ = translate

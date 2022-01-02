@@ -33,7 +33,7 @@ with open("README.md", "r", encoding="utf8") as readme, open(
 
 setuptools.setup(
     name="gpytranslate",
-    version="1.3.0",
+    version="1.4.0",
     author="Davide Galilei",
     author_email="davidegalilei2018@gmail.com",
     description="A Python3 library for translating text using Google Translate API.",

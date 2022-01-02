@@ -82,6 +82,12 @@ translator = SyncTranslator()
 with open("test.mp3", "wb") as file:
     translator.tts("Hello world!", file=file)
 ```
+
+----
+## Useful Resources
+https://danpetrov.xyz/programming/2021/12/30/telegram-google-translate.html
+https://vielhuber.de/en/blog/google-translation-api-hacking/
+
 ----
 ## Development
 Want to contribute? Pull requests are accepted!
