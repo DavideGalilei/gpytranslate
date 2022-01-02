@@ -24,7 +24,6 @@
 """
 import io
 
-from contextlib import aclosing
 from collections.abc import Mapping
 from typing import Union, Dict, List, Any
 
@@ -116,7 +115,7 @@ class Translator(BaseTranslator):
             if v is not None
         }
         try:
-            async with aclosing(httpx.AsyncClient(proxies=self.proxies, **self.options)) as c:
+            async with httpx.AsyncClient(proxies=self.proxies, **self.options) as c:
                 c: httpx.AsyncClient
                 raw: Union[Mapping, List] = (
                     (
@@ -151,6 +150,7 @@ class Translator(BaseTranslator):
                         ]
                     )
                 )
+                await c.aclose()
 
             return self.check(raw=raw, client=client, dt=dt, text=text)
         except Exception as e:
@@ -188,8 +188,8 @@ class Translator(BaseTranslator):
             extra=extra,
         )
         try:
-            async with aclosing(httpx.AsyncClient(proxies=self.proxies, **self.options)) as client:
-                async with client.stream(
+            async with httpx.AsyncClient(proxies=self.proxies, **self.options) as c:
+                async with c.stream(
                     "GET",
                     url=self.tts_url,
                     params=params,
@@ -203,7 +203,9 @@ class Translator(BaseTranslator):
                         file: AsyncBufferedIOBase
                         async for chunk in response.aiter_bytes(chunk_size=chunk_size):
                             await file.write(chunk)
-                return file
+                await c.aclose()
+
+            return file
         except Exception as e:
             raise TranslationError(e) from None
 

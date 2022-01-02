@@ -23,7 +23,6 @@
     SOFTWARE.
 """
 
-from contextlib import closing
 from collections.abc import Mapping
 from typing import Union, Dict, List, Any, BinaryIO
 
@@ -112,7 +111,7 @@ class SyncTranslator(BaseTranslator):
             if v is not None
         }
         try:
-            with closing(httpx.Client(proxies=self.proxies, **self.options)) as c:
+            with httpx.Client(proxies=self.proxies, **self.options) as c:
                 raw: Union[Mapping, List] = (
                     c.post(
                         self.url,
@@ -140,6 +139,7 @@ class SyncTranslator(BaseTranslator):
                         ]
                     )
                 )
+                c.close()
 
             return self.check(raw=raw, client=client, dt=dt, text=text)
         except Exception as e:
