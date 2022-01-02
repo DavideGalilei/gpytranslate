@@ -2,7 +2,7 @@
     gpytranslate - A Python3 library for translating text using Google Translate API.
     MIT License
 
-    Copyright (c) 2021 Davide Galilei
+    Copyright (c) 2022 Davide Galilei
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -25,15 +25,20 @@
 
 import setuptools
 
-with open("README.md", "r", encoding="utf8") as readme, open(
-    "requirements.txt", "r", encoding="utf8"
-) as requirements:
+from pathlib import Path
+
+root: Path = Path(__file__).parent.resolve()
+readme_path: Path = root / "README.md"
+requirements_path: Path = root / "requirements.txt"
+
+with readme_path.open(encoding="utf8") as readme,\
+        requirements_path.open(encoding="utf8") as requirements:
     long_description = readme.read()
     requires = requirements.read().splitlines(keepends=False)
 
 setuptools.setup(
     name="gpytranslate",
-    version="1.3.0",
+    version="1.4.0",
     author="Davide Galilei",
     author_email="davidegalilei2018@gmail.com",
     description="A Python3 library for translating text using Google Translate API.",

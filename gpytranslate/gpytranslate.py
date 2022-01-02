@@ -2,7 +2,7 @@
     gpytranslate - A Python3 library for translating text using Google Translate API.
     MIT License
 
-    Copyright (c) 2021 Davide Galilei
+    Copyright (c) 2022 Davide Galilei
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -23,13 +23,15 @@
     SOFTWARE.
 """
 import io
+
 from collections.abc import Mapping
 from typing import Union, Dict, List, Any
 
 import httpx
 from aiofiles.threadpool import AsyncBufferedIOBase
 
-from .types import TranslatedObject, BaseTranslator, BASE_HEADERS
+from .exceptions import TranslationError
+from .types import TranslatedObject, BaseTranslator, get_base_headers
 
 
 class Translator(BaseTranslator):
@@ -38,14 +40,14 @@ class Translator(BaseTranslator):
         proxies: Dict[str, str] = None,
         url: str = "https://translate.googleapis.com/translate_a/single",
         tts_url: str = "https://translate.google.com/translate_tts",
-        headers: dict = ...,
+        headers: Union[dict, callable] = ...,
         **options
     ):
         self.url = url
         self.tts_url = tts_url
         self.proxies = proxies
         self.options = options
-        self.headers = BASE_HEADERS if headers is Ellipsis else headers
+        self.headers = get_base_headers if headers is Ellipsis else headers
 
     async def translate(
         self,
@@ -67,7 +69,7 @@ class Translator(BaseTranslator):
             text: str = Text to translate.
 
 
-            sourcelang: str = "text" original language, pass "auto" for auto detection (default: "auto").
+            sourcelang: str = "text" original language, pass "auto" for auto-detection (default: "auto").
 
 
             targetlang: str = target language for translating "text" (default: "en").
@@ -77,7 +79,7 @@ class Translator(BaseTranslator):
                 (Will return the raw API json if "client" is not "gtx")
 
 
-            dt: str = Specifies what to return in the API reply (default: "t").
+            dt: str = Specifies what to return to the API reply (default: "t").
                 (Will return the raw API json if "dt" is not "t".
                 t - Translation of source text;
                 at - Alternate translations;
@@ -112,44 +114,47 @@ class Translator(BaseTranslator):
             }.items()
             if v is not None
         }
-        async with httpx.AsyncClient(proxies=self.proxies, **self.options) as c:
-            c: httpx.AsyncClient
-            raw: Union[Mapping, List] = (
-                (
-                    await c.post(
-                        self.url,
-                        params={**params, "q": text},
-                        headers=self.headers,
+        try:
+            async with httpx.AsyncClient(proxies=self.proxies, **self.options) as c:
+                c: httpx.AsyncClient
+                raw: Union[Mapping, List] = (
+                    (
+                        await c.post(
+                            self.url,
+                            params={**params, "q": text},
+                            headers=self.get_headers(),
+                        )
+                    ).json()
+                    if isinstance(text, str)
+                    else (
+                        {
+                            k: (
+                                await c.post(
+                                    self.url,
+                                    params={**params, "q": v},
+                                    headers=self.get_headers(),
+                                )
+                            ).json()
+                            for k, v in text.items()
+                        }
+                        if isinstance(text, Mapping)
+                        else [
+                            (
+                                await c.post(
+                                    self.url,
+                                    params={**params, "q": elem},
+                                    headers=self.get_headers(),
+                                )
+                            ).json()
+                            for elem in text
+                        ]
                     )
-                ).json()
-                if isinstance(text, str)
-                else (
-                    {
-                        k: (
-                            await c.post(
-                                self.url,
-                                params={**params, "q": v},
-                                headers=self.headers,
-                            )
-                        ).json()
-                        for k, v in text.items()
-                    }
-                    if isinstance(text, Mapping)
-                    else [
-                        (
-                            await c.post(
-                                self.url,
-                                params={**params, "q": elem},
-                                headers=self.headers,
-                            )
-                        ).json()
-                        for elem in text
-                    ]
                 )
-            )
-            await c.aclose()
+                await c.aclose()
 
-        return self.check(raw=raw, client=client, dt=dt, text=text)
+            return self.check(raw=raw, client=client, dt=dt, text=text)
+        except Exception as e:
+            raise TranslationError(e) from None
 
     async def detect(self, text: Union[str, list, dict]):
         if isinstance(text, str):
@@ -182,20 +187,26 @@ class Translator(BaseTranslator):
             textlen=textlen,
             extra=extra,
         )
-        async with httpx.AsyncClient(proxies=self.proxies, **self.options).stream(
-            "GET",
-            url=self.tts_url,
-            params=params,
-            headers=self.headers,
-        ) as response:
-            response: httpx.Response
-            if isinstance(file, io.BytesIO):
-                async for chunk in response.aiter_bytes(chunk_size=chunk_size):
-                    file.write(chunk)
-            else:
-                file: AsyncBufferedIOBase
-                async for chunk in response.aiter_bytes(chunk_size=chunk_size):
-                    await file.write(chunk)
-        return file
+        try:
+            async with httpx.AsyncClient(proxies=self.proxies, **self.options) as c:
+                async with c.stream(
+                    "GET",
+                    url=self.tts_url,
+                    params=params,
+                    headers=self.get_headers(),
+                ) as response:
+                    response: httpx.Response
+                    if isinstance(file, io.BytesIO):
+                        async for chunk in response.aiter_bytes(chunk_size=chunk_size):
+                            file.write(chunk)
+                    else:
+                        file: AsyncBufferedIOBase
+                        async for chunk in response.aiter_bytes(chunk_size=chunk_size):
+                            await file.write(chunk)
+                await c.aclose()
+
+            return file
+        except Exception as e:
+            raise TranslationError(e) from None
 
     __call__ = translate  # Backwards compatibility
