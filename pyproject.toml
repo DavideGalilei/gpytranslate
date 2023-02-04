@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gpytranslate"
+version = "1.5.0"
+dynamic = ["dependencies"]
+
+authors = [
+  { name="Davide Galilei", email="davidegalilei2018@gmail.com" },
+]
+maintainers = [
+  { name="Davide Galilei", email="davidegalilei2018@gmail.com" },
+]
+
+description = "A Python3 library for translating text using Google Translate API."
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/DavideGalilei/gpytranslate"
+"Bug Tracker" = "https://github.com/DavideGalilei/gpytranslate/issues"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
