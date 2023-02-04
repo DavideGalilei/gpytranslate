@@ -87,6 +87,7 @@ with open("test.mp3", "wb") as file:
 ## Useful Resources
 https://danpetrov.xyz/programming/2021/12/30/telegram-google-translate.html
 https://vielhuber.de/en/blog/google-translation-api-hacking/
+https://github.com/OwlGramDev/OwlGram/blob/b9bb8a247758adbf7be7aaf3eb150f680bec1269/TMessagesProj/src/main/java/it/owlgram/android/translator/GoogleAppTranslator.java
 
 ----
 ## Development
