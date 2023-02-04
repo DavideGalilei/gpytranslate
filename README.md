@@ -15,7 +15,7 @@ A Python3 library for translating text using Google Translate API.
 
 ### Installation
 Requirements:
-- Python 3.6 or higher.
+- Python 3.7 or higher.
 
 
 ```bash

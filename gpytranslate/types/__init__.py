@@ -3,20 +3,44 @@ import random
 from .translated_object import TranslatedObject
 from .base_translator import BaseTranslator
 
-USER_AGENTS: tuple = (
-    "GoogleTranslate/6.6.1.RC09.302039986 (Linux; U; Android 9; Redmi Note 8)",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:94.0) Gecko/20100101 Firefox/94.0",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:95.0) Gecko/20100101 Firefox/95.0",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36",
-)
+DEFAULT_TRANSLATION_ENDPOINT: str = "https://translate.google.com/translate_a/single"
+DEFAULT_TTS_ENDPOINT: str = "https://translate.google.com/translate_tts"
+
+
+class Device:
+    DEVICES: tuple = (
+        "Linux; U; Android 10; Pixel 4",
+        "Linux; U; Android 10; Pixel 4 XL",
+        "Linux; U; Android 10; Pixel 4a",
+        "Linux; U; Android 10; Pixel 4a XL",
+        "Linux; U; Android 11; Pixel 4",
+        "Linux; U; Android 11; Pixel 4 XL",
+        "Linux; U; Android 11; Pixel 4a",
+        "Linux; U; Android 11; Pixel 4a XL",
+        "Linux; U; Android 11; Pixel 5",
+        "Linux; U; Android 11; Pixel 5a",
+        "Linux; U; Android 12; Pixel 4",
+        "Linux; U; Android 12; Pixel 4 XL",
+        "Linux; U; Android 12; Pixel 4a",
+        "Linux; U; Android 12; Pixel 4a XL",
+        "Linux; U; Android 12; Pixel 5",
+        "Linux; U; Android 12; Pixel 5a",
+        "Linux; U; Android 12; Pixel 6",
+        "Linux; U; Android 12; Pixel 6 Pro",
+    )
+
+    __i = 0
+
+    @classmethod
+    def shift(cls) -> str:
+        cls.__i += 1
+        cls.__i %= len(cls.DEVICES)
+        return cls.DEVICES[cls.__i]
 
 
 def get_base_headers() -> dict:
-    BASE_HEADERS: dict = {
-        "User-Agent": random.choice(USER_AGENTS)
+    return {
+        "User-Agent": "GoogleTranslate/6.28.0.05.421483610 ({device})".format(
+            device=Device.shift(),
+        )
     }
-
-    return BASE_HEADERS

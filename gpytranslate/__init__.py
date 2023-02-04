@@ -3,7 +3,7 @@ from .sync import SyncTranslator
 from .types import TranslatedObject
 from .exceptions import GpytranslateException, TranslationError
 
-__version__ = "1.4.0"
+__version__ = "1.5.0"
 __all__ = [
     "Translator",
     "SyncTranslator",

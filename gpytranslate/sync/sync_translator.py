@@ -2,7 +2,7 @@
     gpytranslate - A Python3 library for translating text using Google Translate API.
     MIT License
 
-    Copyright (c) 2022 Davide Galilei
+    Copyright (c) 2023 Davide Galilei
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -29,15 +29,21 @@ from typing import Union, Dict, List, Any, BinaryIO
 import httpx
 
 from ..exceptions import TranslationError
-from ..types import TranslatedObject, BaseTranslator, get_base_headers
+from ..types import (
+    TranslatedObject,
+    BaseTranslator,
+    get_base_headers,
+    DEFAULT_TRANSLATION_ENDPOINT,
+    DEFAULT_TTS_ENDPOINT,
+)
 
 
 class SyncTranslator(BaseTranslator):
     def __init__(
         self,
         proxies: Dict[str, str] = None,
-        url: str = "https://translate.googleapis.com/translate_a/single",
-        tts_url: str = "https://translate.google.com/translate_tts",
+        url: str = DEFAULT_TRANSLATION_ENDPOINT,
+        tts_url: str = DEFAULT_TTS_ENDPOINT,
         headers: Union[dict, callable] = ...,
         **options
     ):

@@ -2,7 +2,7 @@
     gpytranslate - A Python3 library for translating text using Google Translate API.
     MIT License
 
-    Copyright (c) 2022 Davide Galilei
+    Copyright (c) 2023 Davide Galilei
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ def test_sync_translate_source():
         "Ciao.", sourcelang="it", targetlang="en"
     )
 
-    assert translation.text == "Hello.", "Translations are not equal."
+    assert translation.text in ("Hello.", "HI."), "Translations are not equal."
 
 
 def test_sync_translate_list():

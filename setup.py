@@ -2,7 +2,7 @@
     gpytranslate - A Python3 library for translating text using Google Translate API.
     MIT License
 
-    Copyright (c) 2022 Davide Galilei
+    Copyright (c) 2023 Davide Galilei
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ with readme_path.open(encoding="utf8") as readme,\
 
 setuptools.setup(
     name="gpytranslate",
-    version="1.4.0",
+    version="1.5.0",
     author="Davide Galilei",
     author_email="davidegalilei2018@gmail.com",
     description="A Python3 library for translating text using Google Translate API.",
@@ -51,6 +51,6 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     install_requires=requires,
 )
