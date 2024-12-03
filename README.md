@@ -1,7 +1,10 @@
 # gpytranslate
-A Python3 library for translating text using Google Translate API.
 
-----
+[![PyPI version](https://badge.fury.io/py/gpytranslate.svg)](https://badge.fury.io/py/gpytranslate)
+[![Python Versions](https://img.shields.io/pypi/pyversions/gpytranslate.svg)](https://pypi.org/project/gpytranslate/)
+[![License](https://img.shields.io/github/license/DavideGalilei/gpytranslate.svg)](https://github.com/DavideGalilei/gpytranslate/blob/master/LICENSE)
+
+A Python3 library for translating text using Google Translate API.
 ## Features
  - **Both Synchronous and Asynchronous**
  - **Dot accessible values**
@@ -14,12 +17,21 @@ A Python3 library for translating text using Google Translate API.
 ## Quick Start
 
 ### Installation
+
 Requirements:
-- Python 3.7 or higher.
+- Python 3.9 or higher
+- httpx[socks] >= 0.28.0
+- aiofiles >= 24.1.0
+- typing-extensions >= 4.12.2
 
-
+Install using pip:
 ```bash
-$ python3 -m pip install -U gpytranslate
+python3 -m pip install -U gpytranslate
+```
+
+Or install with poetry:
+```bash
+poetry add gpytranslate
 ```
 ----
 ### Usage
@@ -89,11 +101,47 @@ https://danpetrov.xyz/programming/2021/12/30/telegram-google-translate.html
 https://vielhuber.de/en/blog/google-translation-api-hacking/
 https://github.com/OwlGramDev/OwlGram/blob/b9bb8a247758adbf7be7aaf3eb150f680bec1269/TMessagesProj/src/main/java/it/owlgram/android/translator/GoogleAppTranslator.java
 
-----
-## Development
-Want to contribute? Pull requests are accepted!
+### Language Codes
 
-----
+The library uses ISO 639-1 two-letter language codes. Some common examples:
+
+- English: 'en'
+- Spanish: 'es' 
+- French: 'fr'
+- German: 'de'
+- Italian: 'it'
+- Japanese: 'ja'
+- Chinese (Simplified): 'zh'
+
+### Error Handling
+
+The library raises `TranslationError` when translation fails:
+
+```python
+from gpytranslate import Translator, TranslationError
+
+translator = Translator()
+try:
+    result = await translator.translate("Hello", targetlang="invalid")
+except TranslationError as e:
+    print(f"Translation failed: {e}")
+```
+
+## Development
+
+### Contributing
+
+Contributions are welcome! Here's how you can help:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run the tests (`pytest`)
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+Please make sure to update tests as appropriate and follow the existing code style.
 ## License
 Licensed under the MIT License.
 

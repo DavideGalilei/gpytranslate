@@ -1,71 +1,73 @@
-"""
-    gpytranslate - A Python3 library for translating text using Google Translate API.
-    MIT License
-
-    Copyright (c) 2023 Davide Galilei
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
-"""
-
 from collections.abc import Mapping
-from typing import Union, Dict, List, Any
+from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
 
 from .translated_object import TranslatedObject
 
+K = TypeVar("K")
+V = TypeVar("V")
+
 
 class BaseTranslator:
-    headers: Union[dict, callable]
+    headers: Union[Dict[str, str], Callable[[], Dict[str, str]]]
 
     @staticmethod
-    def parse(
-        raw: Union[dict, Mapping], translated: bool = True
-    ) -> Union[TranslatedObject, Dict[str, Union[TranslatedObject, str, List[str]]]]:
-        x = {
-            "raw": TranslatedObject(raw),
-            "orig": " ".join(s["orig"] for s in raw["sentences"] if "orig" in s),
-            "text": " ".join(s["trans"] for s in raw["sentences"] if "trans" in s),
-            "orig_raw": [s["orig"] for s in raw["sentences"] if "orig" in s],
-            "text_raw": [s["trans"] for s in raw["sentences"] if "trans" in s],
-            "lang": raw["src"],
-        }
+    def parse(raw: Dict[str, Any], translated: bool = True) -> Union[TranslatedObject, Dict[str, Any]]:
+        """Parse raw API response into TranslatedObject.
+
+        Args:
+            raw: Raw response from translation API
+            translated: Whether to return TranslatedObject or dict
+
+        Returns:
+            Either TranslatedObject or raw dict based on translated parameter
+        """
         if translated:
-            return TranslatedObject(x)
-        return x
+            return TranslatedObject.from_raw_response(raw)
+        return raw
 
     def check(
         self,
-        text: Union[str, Mapping, Any],
-        raw: Union[Mapping, List],
+        text: Union[str, Mapping[K, str], List[str]],
+        raw: Union[Mapping[str, Any], List[Any]],
         client: str,
         dt: str,
-    ):
+    ) -> Union[TranslatedObject, Dict[K, TranslatedObject], List[TranslatedObject]]:
+        """Check and validate translation API response.
+
+        Args:
+            text: Original input text
+            raw: Raw API response data
+            client: API client identifier
+            dt: Response data type
+
+        Returns:
+            Parsed translation result(s)
+
+        Raises:
+            TranslationError: If response validation fails
+        """
+        """Check and parse API response based on input type.
+
+        Args:
+            text: Original input text
+            raw: Raw API response
+            client: API client type
+            dt: Data type parameter
+
+        Returns:
+            Parsed translation result(s)
+        """
         if client != "gtx" or dt != "t":
-            return raw
+            return raw  # type: ignore
 
         if isinstance(text, str):
-            return self.parse(raw)
+            return self.parse(raw)  # type: ignore
         elif isinstance(text, Mapping):
-            return {k: self.parse(v) for k, v in raw.items()}
+            return {k: self.parse(v) for k, v in raw.items()}  # type: ignore
         else:
-            return [self.parse(elem) for elem in raw]
+            return [self.parse(elem) for elem in raw]  # type: ignore
 
-    def get_headers(self) -> dict:
+    def get_headers(self) -> Dict[str, str]:
         return self.headers() if callable(self.headers) else self.headers
 
     @staticmethod
@@ -74,9 +76,9 @@ class BaseTranslator:
         targetlang: str,
         idx: int,
         prev: str,
-        text: str,
-        textlen: int,
-        extra: dict,
+        text: Union[str, List[str], Dict[Any, str], Mapping[K, str]],
+        textlen: Optional[int],
+        extra: Dict[str, Any],
     ) -> Dict[str, Union[str, int]]:
         return {
             k: v

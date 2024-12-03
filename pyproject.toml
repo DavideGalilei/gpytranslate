@@ -1,31 +1,54 @@
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
+[tool.poetry]
 name = "gpytranslate"
-version = "1.5.1"
-dependencies = [
-    "httpx",
-    "aiofiles",
-]
-
-authors = [
-  { name="Davide Galilei", email="davidegalilei2018@gmail.com" },
-]
-maintainers = [
-  { name="Davide Galilei", email="davidegalilei2018@gmail.com" },
-]
-
+version = "2.0.0"
 description = "A Python3 library for translating text using Google Translate API."
+authors = ["Davide Galilei <davidegalilei2018@gmail.com>"]
+maintainers = ["Davide Galilei <davidegalilei2018@gmail.com>"]
+license = "MIT"
 readme = "README.md"
-requires-python = ">=3.7"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 
+[tool.poetry.dependencies]
+python = ">=3.9"
+httpx = {extras = ["socks"], version = "^0.28.0"}
+aiofiles = "^24.1.0"
+typing-extensions = "^4.12.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest-asyncio = "^0.24.0"
+types-aiofiles = "^24.1.0.20240626"
+mypy = "^1.13.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
 [project.urls]
 "Homepage" = "https://github.com/DavideGalilei/gpytranslate"
 "Bug Tracker" = "https://github.com/DavideGalilei/gpytranslate/issues"
+
+
+[tool.mypy]
+follow_imports = "silent"
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_any_generics = true
+check_untyped_defs = true
+no_implicit_reexport = true
+
+# for strict mypy: (this is the tricky one :-))
+disallow_untyped_defs = true
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["F", "I", "UP"]
