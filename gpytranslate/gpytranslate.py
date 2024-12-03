@@ -211,7 +211,7 @@ class Translator(BaseTranslator):
         prev: str = "input",
         chunk_size: int = 1024,
         textlen: Optional[int] = None,
-        **extra,
+        **extra: Any,
     ) -> Union[AsyncBufferedIOBase, io.BytesIO]:
         params = self.parse_tts(
             client=client,
