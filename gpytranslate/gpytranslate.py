@@ -31,6 +31,15 @@ class Translator(BaseTranslator):
         headers: Optional[Union[Dict[str, str], Callable[[], Dict[str, str]]]] = None,
         **options: Any,
     ) -> None:
+        """Initialize the translator.
+        
+        Args:
+            proxies: Optional proxy configuration dictionary
+            url: Translation API endpoint URL
+            tts_url: Text-to-speech API endpoint URL 
+            headers: Custom headers or header generator function
+            **options: Additional options passed to httpx.AsyncClient
+        """
         self.url = url
         self.tts_url = tts_url
         self.proxies = proxies
@@ -204,6 +213,25 @@ class Translator(BaseTranslator):
         text: Union[str, List[str], Dict[Any, str], Mapping[K, str]],
         file: Union[AsyncBufferedIOBase, io.BytesIO],
         targetlang: str = "en",
+        **kwargs: Any,
+    ) -> Union[AsyncBufferedIOBase, io.BytesIO]:
+        """Generate text-to-speech audio.
+        
+        Args:
+            text: Text to convert to speech
+            file: Output file or buffer
+            targetlang: Target language code
+            **kwargs: Additional TTS parameters
+            
+        Returns:
+            The output file/buffer with audio data
+            
+        Raises:
+            TranslationError: If TTS generation fails
+            ValueError: If targetlang is invalid
+        """
+        if not isinstance(targetlang, str) or len(targetlang) != 2:
+            raise ValueError("targetlang must be a 2-letter language code")
         client: str = "at",
         idx: int = 0,
         prev: str = "input",
