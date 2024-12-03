@@ -5,7 +5,7 @@ from .translated_object import TranslatedObject
 
 
 class BaseTranslator:
-    headers: Union[dict, Callable[[], dict]]
+    headers: Union[Dict[str, str], Callable[[], Dict[str, str]]]
 
     @staticmethod
     def parse(raw: Dict[str, Any], translated: bool = True) -> Union[TranslatedObject, Dict[str, Any]]:
@@ -25,7 +25,7 @@ class BaseTranslator:
     def check(
         self,
         text: Union[str, Mapping, List[str]],
-        raw: Union[Mapping, List],
+        raw: Union[Mapping[str, Any], List[Any]],
         client: str,
         dt: str,
     ) -> Union[TranslatedObject, Dict[str, TranslatedObject], List[TranslatedObject]]:
@@ -50,7 +50,7 @@ class BaseTranslator:
         else:
             return [self.parse(elem) for elem in raw]  # type: ignore
 
-    def get_headers(self) -> dict:
+    def get_headers(self) -> Dict[str, str]:
         return self.headers() if callable(self.headers) else self.headers
 
     @staticmethod
