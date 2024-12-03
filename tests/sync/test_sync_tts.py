@@ -4,7 +4,10 @@ import os.path
 from gpytranslate import SyncTranslator
 
 
+"""Tests for the synchronous text-to-speech functionality."""
+
 def test_sync_tts() -> None:
+    """Test that TTS can generate an audio file."""
     translator = SyncTranslator()
     filename = "test.mp3"
 

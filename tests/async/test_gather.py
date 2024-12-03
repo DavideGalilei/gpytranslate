@@ -5,8 +5,11 @@ import pytest
 from gpytranslate import Translator
 
 
+"""Tests for concurrent translation using asyncio.gather."""
+
 @pytest.mark.asyncio
 async def test_gather() -> None:
+    """Test that multiple translations can be processed concurrently."""
     translator = Translator()
     tasks = [
         translator.translate("Hello world!", targetlang="it"),
