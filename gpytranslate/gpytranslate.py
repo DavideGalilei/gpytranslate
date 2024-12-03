@@ -158,7 +158,7 @@ class Translator(BaseTranslator):
                     proxies["socks5h"] = httpx.AsyncHTTPTransport(proxy=self.proxies["socks5h"])
 
             async with httpx.AsyncClient(mounts=proxies, **self.options) as http_client:
-                raw: Union[Mapping, List] = (
+                raw: Union[Mapping[str, Any], List[Any]] = (
                     (
                         await http_client.post(
                             self.url,

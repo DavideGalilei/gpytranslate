@@ -142,7 +142,7 @@ class SyncTranslator(BaseTranslator):
                     proxies["socks5h"] = httpx.HTTPTransport(proxy=self.proxies["socks5h"])
 
             with httpx.Client(mounts=proxies, **self.options) as c:
-                raw: Union[Mapping, List] = (
+                raw: Union[Mapping[str, Any], List[Any]] = (
                     c.post(
                         self.url,
                         params={**params, "q": text},
