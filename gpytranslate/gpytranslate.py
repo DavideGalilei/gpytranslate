@@ -24,7 +24,7 @@ class Translator(BaseTranslator):
         proxies: Optional[Dict[str, str]] = None,
         url: str = DEFAULT_TRANSLATION_ENDPOINT,
         tts_url: str = DEFAULT_TTS_ENDPOINT,
-        headers: Union[dict, callable] = ...,
+        headers: Union[dict, Callable[[], dict]] = ...,
         **options,
     ):
         self.url = url
