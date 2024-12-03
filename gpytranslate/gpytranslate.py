@@ -213,7 +213,12 @@ class Translator(BaseTranslator):
         text: Union[str, List[str], Dict[Any, str], Mapping[K, str]],
         file: Union[AsyncBufferedIOBase, io.BytesIO],
         targetlang: str = "en",
-        **kwargs: Any,
+        client: str = "at",
+        idx: int = 0,
+        prev: str = "input", 
+        chunk_size: int = 1024,
+        textlen: Optional[int] = None,
+        **extra: Any,
     ) -> Union[AsyncBufferedIOBase, io.BytesIO]:
         """Generate text-to-speech audio.
         
@@ -221,7 +226,12 @@ class Translator(BaseTranslator):
             text: Text to convert to speech
             file: Output file or buffer
             targetlang: Target language code
-            **kwargs: Additional TTS parameters
+            client: API client identifier
+            idx: TTS segment index
+            prev: Previous segment identifier
+            chunk_size: Download chunk size
+            textlen: Override text length
+            **extra: Additional TTS parameters
             
         Returns:
             The output file/buffer with audio data
@@ -232,13 +242,6 @@ class Translator(BaseTranslator):
         """
         if not isinstance(targetlang, str) or len(targetlang) != 2:
             raise ValueError("targetlang must be a 2-letter language code")
-        client: str = "at",
-        idx: int = 0,
-        prev: str = "input",
-        chunk_size: int = 1024,
-        textlen: Optional[int] = None,
-        **extra: Any,
-    ) -> Union[AsyncBufferedIOBase, io.BytesIO]:
         params = self.parse_tts(
             client=client,
             targetlang=targetlang,
