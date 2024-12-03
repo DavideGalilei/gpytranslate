@@ -1,4 +1,5 @@
 """Custom exceptions for gpytranslate."""
+
 from typing import Tuple
 
 
@@ -8,10 +9,10 @@ class GpytranslateException(Exception):
 
 class TranslationError(GpytranslateException):
     """Raised when a translation or TTS operation fails."""
-    
+
     def __init__(self, exception: Exception) -> None:
         """Initialize the error with the underlying exception.
-        
+
         Args:
             exception: The original exception that caused this error
         """
@@ -19,7 +20,7 @@ class TranslationError(GpytranslateException):
 
     def __str__(self) -> str:
         """Get string representation of the error.
-        
+
         Returns:
             str: Formatted error message with the underlying exception
         """

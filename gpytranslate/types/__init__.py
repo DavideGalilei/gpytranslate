@@ -40,4 +40,11 @@ def get_base_headers() -> dict[str, str]:
     return {"User-Agent": f"GoogleTranslate/6.28.0.05.421483610 ({Device.shift()})"}
 
 
-__all__ = ["BaseTranslator", "TranslatedObject", "DEFAULT_TRANSLATION_ENDPOINT", "DEFAULT_TTS_ENDPOINT", "Device", "get_base_headers"]
+__all__ = [
+    "BaseTranslator",
+    "TranslatedObject",
+    "DEFAULT_TRANSLATION_ENDPOINT",
+    "DEFAULT_TTS_ENDPOINT",
+    "Device",
+    "get_base_headers",
+]
