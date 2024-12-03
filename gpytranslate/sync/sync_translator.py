@@ -1,5 +1,5 @@
 from collections.abc import Mapping
-from typing import TypeVar, Union, List, Dict, Mapping, overload, Any, Optional
+from typing import Any, BinaryIO, Callable, Dict, List, Mapping, Optional, TypeVar, Union, overload
 
 import httpx
 

@@ -1,15 +1,15 @@
 from collections.abc import Mapping
-from typing import Any, Dict, List, Union
+from typing import Any, Callable, Dict, List, Union
 
 from .translated_object import TranslatedObject
 
 
 class BaseTranslator:
-    headers: Union[dict, callable]
+    headers: Union[dict, Callable[[], dict]]
 
     @staticmethod
     def parse(
-        raw: Union[dict, Mapping], translated: bool = True
+        raw: Dict[str, Any], translated: bool = True
     ) -> Union[TranslatedObject, Dict[str, Any]]:
         """Parse raw API response into TranslatedObject.
         
@@ -61,8 +61,8 @@ class BaseTranslator:
         targetlang: str,
         idx: int,
         prev: str,
-        text: str,
-        textlen: int,
+        text: Union[str, List[str], Dict[Any, str], Mapping[Any, Any]],
+        textlen: Optional[int],
         extra: dict,
     ) -> Dict[str, Union[str, int]]:
         return {

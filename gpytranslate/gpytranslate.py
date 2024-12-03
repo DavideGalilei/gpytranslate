@@ -1,6 +1,6 @@
 import io
 from collections.abc import Mapping
-from typing import Any, Dict, List, Optional, Union, TypeVar, overload
+from typing import Any, BinaryIO, Callable, Dict, List, Optional, Union, TypeVar, overload
 
 import httpx
 from aiofiles.threadpool import AsyncBufferedIOBase
@@ -145,8 +145,8 @@ class Translator(BaseTranslator):
                 if proxies.get("socks5h"):
                     proxies["socks5h"] = httpx.AsyncHTTPTransport(proxy=self.proxies["socks5h"])
 
-            async with httpx.AsyncClient(mounts=proxies, **self.options) as c:
-                c: httpx.AsyncClient
+            async with httpx.AsyncClient(mounts=proxies, **self.options) as client:
+                client: httpx.AsyncClient
                 raw: Union[Mapping, List] = (
                     (
                         await c.post(
@@ -235,8 +235,8 @@ class Translator(BaseTranslator):
                     url=self.tts_url,
                     params=params,
                     headers=self.get_headers(),
-                ) as response:
-                    response: httpx.Response
+                ) as resp:
+                    resp: httpx.Response
                     if isinstance(file, io.BytesIO):
                         async for chunk in response.aiter_bytes(chunk_size=chunk_size):
                             file.write(chunk)
