@@ -10,35 +10,47 @@ class BaseTranslator:
     @staticmethod
     def parse(
         raw: Union[dict, Mapping], translated: bool = True
-    ) -> Union[TranslatedObject, Dict[str, Union[TranslatedObject, str, List[str]]]]:
-        x = {
-            "raw": TranslatedObject(raw),
-            "orig": " ".join(s["orig"] for s in raw["sentences"] if "orig" in s),
-            "text": " ".join(s["trans"] for s in raw["sentences"] if "trans" in s),
-            "orig_raw": [s["orig"] for s in raw["sentences"] if "orig" in s],
-            "text_raw": [s["trans"] for s in raw["sentences"] if "trans" in s],
-            "lang": raw["src"],
-        }
+    ) -> Union[TranslatedObject, Dict[str, Any]]:
+        """Parse raw API response into TranslatedObject.
+        
+        Args:
+            raw: Raw response from translation API
+            translated: Whether to return TranslatedObject or dict
+            
+        Returns:
+            Either TranslatedObject or raw dict based on translated parameter
+        """
         if translated:
-            return TranslatedObject(x)
-        return x
+            return TranslatedObject.from_raw_response(raw)
+        return raw
 
     def check(
         self,
-        text: Union[str, Mapping, Any],
+        text: Union[str, Mapping, List[str]],
         raw: Union[Mapping, List],
         client: str,
         dt: str,
-    ):
+    ) -> Union[TranslatedObject, Dict[str, TranslatedObject], List[TranslatedObject]]:
+        """Check and parse API response based on input type.
+        
+        Args:
+            text: Original input text
+            raw: Raw API response
+            client: API client type
+            dt: Data type parameter
+            
+        Returns:
+            Parsed translation result(s)
+        """
         if client != "gtx" or dt != "t":
-            return raw
+            return raw  # type: ignore
 
         if isinstance(text, str):
-            return self.parse(raw)
+            return self.parse(raw)  # type: ignore
         elif isinstance(text, Mapping):
-            return {k: self.parse(v) for k, v in raw.items()}
+            return {k: self.parse(v) for k, v in raw.items()}  # type: ignore
         else:
-            return [self.parse(elem) for elem in raw]
+            return [self.parse(elem) for elem in raw]  # type: ignore
 
     def get_headers(self) -> dict:
         return self.headers() if callable(self.headers) else self.headers

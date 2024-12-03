@@ -1,39 +1,41 @@
 """Translation result object implementation."""
-import json
-from typing import Any, Dict, List, Union
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
 
 
-class TranslatedObject(dict):
-    """A dictionary subclass that holds translation results with attribute access."""
+@dataclass
+class TranslatedObject:
+    """A dataclass that holds translation results."""
+    raw: Dict[str, Any]
+    orig: str
+    text: str 
+    orig_raw: List[str]
+    text_raw: List[str]
+    lang: str
     
-    def __getattr__(self, attr: str) -> Union['TranslatedObject', List['TranslatedObject'], Any]:
-        """Get attributes allowing dot notation access.
+    def __str__(self) -> str:
+        """Get string representation with the translated text.
+        
+        Returns:
+            str: The translated text
+        """
+        return self.text
+
+    @classmethod
+    def from_raw_response(cls, raw: Dict[str, Any]) -> "TranslatedObject":
+        """Create TranslatedObject from raw API response.
         
         Args:
-            attr: The attribute name to access
+            raw: Raw response dictionary from the translation API
             
         Returns:
-            The attribute value, wrapped in TranslatedObject if it's a dict
+            TranslatedObject: Parsed translation result
         """
-        if isinstance(self, list):
-            return [TranslatedObject(elem) for elem in self]
-            
-        value = dict.get(self, attr)
-        if isinstance(value, dict):
-            return TranslatedObject(value)
-        return value
-
-    def __str__(self) -> str:
-        """Get string representation, truncating long values.
-        
-        Returns:
-            str: JSON formatted string with truncated values
-        """
-        return json.dumps(
-            {k: v if len(str(v)) < 200 else "..." for k, v in self.items()},
-            indent=4
+        return cls(
+            raw=raw,
+            orig=" ".join(s["orig"] for s in raw["sentences"] if "orig" in s),
+            text=" ".join(s["trans"] for s in raw["sentences"] if "trans" in s),
+            orig_raw=[s["orig"] for s in raw["sentences"] if "orig" in s],
+            text_raw=[s["trans"] for s in raw["sentences"] if "trans" in s],
+            lang=raw["src"]
         )
-
-    # Maintain dict-like attribute access
-    __setattr__ = dict.__setitem__  # type: ignore
-    __delattr__ = dict.__delitem__  # type: ignore
