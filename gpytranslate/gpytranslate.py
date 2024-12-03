@@ -37,7 +37,7 @@ class Translator(BaseTranslator):
         url: str = DEFAULT_TRANSLATION_ENDPOINT,
         tts_url: str = DEFAULT_TTS_ENDPOINT,
         headers: Optional[Union[Dict[str, str], Callable[[], Dict[str, str]]]] = None,
-        **options: Any,
+        **options: TranslatorOptions,
     ) -> None:
         self.url = url
         self.tts_url = tts_url

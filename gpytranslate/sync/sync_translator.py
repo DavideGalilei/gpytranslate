@@ -1,6 +1,8 @@
 from collections.abc import Mapping
 from typing import Any, BinaryIO, Callable, Dict, List, Optional, TypeVar, Union, overload
 
+from ..gpytranslate import TranslatorOptions
+
 import httpx
 
 from ..exceptions import TranslationError
@@ -22,7 +24,7 @@ class SyncTranslator(BaseTranslator):
         url: str = DEFAULT_TRANSLATION_ENDPOINT,
         tts_url: str = DEFAULT_TTS_ENDPOINT,
         headers: Optional[Union[Dict[str, str], Callable[[], Dict[str, str]]]] = None,
-        **options: Any,
+        **options: TranslatorOptions,
     ) -> None:
         self.url = url
         self.tts_url = tts_url
@@ -175,7 +177,7 @@ class SyncTranslator(BaseTranslator):
         except Exception as e:
             raise TranslationError(e) from None
 
-    def detect(self, text: Union[str, List[Any], Dict[Any, Any]]) -> Union[str, List[str], Dict[Any, str]]:
+    def detect(self, text: Union[str, List[Any], Dict[Any, Any]], **kwargs: Any) -> Union[str, List[str], Dict[Any, str]]:
         if isinstance(text, str):
             return self(text).lang
         elif isinstance(text, list):
