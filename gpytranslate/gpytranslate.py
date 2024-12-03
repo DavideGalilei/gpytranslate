@@ -1,6 +1,7 @@
 import io
 from collections.abc import Mapping
-from typing import Any, Callable, Dict, List, Optional, Protocol, Tuple, TypeVar, Union, overload
+from typing import Any, Callable, Dict, List, Optional, Protocol, TypeVar, Union, overload
+
 import httpx
 
 from .exceptions import TranslationError
@@ -19,9 +20,6 @@ K = TypeVar("K")
 class AsyncBufferedIOBase(Protocol):
     async def write(self, data: bytes) -> int: ...
     async def close(self) -> None: ...
-    
-    
-from httpx import Auth, Limits, Proxy, Timeout, URL
 
 
 class Translator(BaseTranslator):

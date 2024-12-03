@@ -3,8 +3,8 @@ from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
 
 from .translated_object import TranslatedObject
 
-K = TypeVar('K')
-V = TypeVar('V')
+K = TypeVar("K")
+V = TypeVar("V")
 
 
 class BaseTranslator:
