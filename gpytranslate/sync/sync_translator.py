@@ -23,7 +23,7 @@ class SyncTranslator(BaseTranslator):
         tts_url: str = DEFAULT_TTS_ENDPOINT,
         headers: Optional[Union[Dict[str, str], Callable[[], Dict[str, str]]]] = None,
         **options: Any,
-    ):
+    ) -> None:
         self.url = url
         self.tts_url = tts_url
         self.proxies = proxies
@@ -68,7 +68,7 @@ class SyncTranslator(BaseTranslator):
 
     def translate(
         self,
-        text: Union[str, List[str], Dict[Any, str], Mapping],
+        text: Union[str, List[str], Dict[Any, str], Mapping[str, str]],
         sourcelang: str = "auto",
         targetlang: str = "en",
         client: str = "gtx",
