@@ -8,15 +8,13 @@ class BaseTranslator:
     headers: Union[dict, Callable[[], dict]]
 
     @staticmethod
-    def parse(
-        raw: Dict[str, Any], translated: bool = True
-    ) -> Union[TranslatedObject, Dict[str, Any]]:
+    def parse(raw: Dict[str, Any], translated: bool = True) -> Union[TranslatedObject, Dict[str, Any]]:
         """Parse raw API response into TranslatedObject.
-        
+
         Args:
             raw: Raw response from translation API
             translated: Whether to return TranslatedObject or dict
-            
+
         Returns:
             Either TranslatedObject or raw dict based on translated parameter
         """
@@ -32,13 +30,13 @@ class BaseTranslator:
         dt: str,
     ) -> Union[TranslatedObject, Dict[str, TranslatedObject], List[TranslatedObject]]:
         """Check and parse API response based on input type.
-        
+
         Args:
             text: Original input text
             raw: Raw API response
             client: API client type
             dt: Data type parameter
-            
+
         Returns:
             Parsed translation result(s)
         """
