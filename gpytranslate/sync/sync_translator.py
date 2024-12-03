@@ -39,7 +39,7 @@ class SyncTranslator(BaseTranslator):
         client: str = "gtx",
         dt: str = "t",
         dj: int = 1,
-        **extra,
+        **extra: Any,
     ) -> TranslatedObject: ...
 
     @overload
@@ -51,7 +51,7 @@ class SyncTranslator(BaseTranslator):
         client: str = "gtx",
         dt: str = "t",
         dj: int = 1,
-        **extra,
+        **extra: Any,
     ) -> List[TranslatedObject]: ...
 
     @overload
@@ -63,7 +63,7 @@ class SyncTranslator(BaseTranslator):
         client: str = "gtx",
         dt: str = "t",
         dj: int = 1,
-        **extra,
+        **extra: Any,
     ) -> Dict[str, TranslatedObject]: ...
 
     def translate(
@@ -74,7 +74,7 @@ class SyncTranslator(BaseTranslator):
         client: str = "gtx",
         dt: str = "t",
         dj: int = 1,
-        **extra,
+        **extra: Any,
     ) -> Union[TranslatedObject, List[TranslatedObject], Dict[str, TranslatedObject]]:
         """
         A function that translates text.

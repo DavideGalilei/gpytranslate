@@ -85,7 +85,7 @@ class Translator(BaseTranslator):
         # Literal["t", "at", "rm", "bd", "md", "ss", "ex", "rw", "dj"] = "t",
         # broken compatibility with python <3.8 :(
         dj: int = 1,
-        **extra,
+        **extra: Any,
     ) -> Union[TranslatedObject, List[TranslatedObject], Dict[str, TranslatedObject]]:
         """
         A function that translates text.
