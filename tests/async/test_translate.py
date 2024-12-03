@@ -6,14 +6,14 @@ from gpytranslate import TranslatedObject, Translator
 
 
 @pytest.mark.asyncio
-async def test_translate_auto():
+async def test_translate_auto() -> None:
     translator = Translator()
     translation: TranslatedObject = await translator.translate("Ciao Mondo.", targetlang="en")
     assert translation.text == "Hello World.", "Translations are not equal."
 
 
 @pytest.mark.asyncio
-async def test_translate_source():
+async def test_translate_source() -> None:
     translator = Translator()
     translation: TranslatedObject = await translator.translate("Ciao.", sourcelang="it", targetlang="en")
 
@@ -21,7 +21,7 @@ async def test_translate_source():
 
 
 @pytest.mark.asyncio
-async def test_translate_list():
+async def test_translate_list() -> None:
     translator = Translator()
     translations: List[TranslatedObject] = await translator.translate(["Ciao Mondo.", "Come stai?"], targetlang="en")
 
@@ -32,7 +32,7 @@ async def test_translate_list():
 
 
 @pytest.mark.asyncio
-async def test_translate_dict():
+async def test_translate_dict() -> None:
     translator = Translator()
     translations: Dict[Any, TranslatedObject] = await translator.translate(
         {1: "Ciao Mondo.", 2: "Come stai?"}, targetlang="en"

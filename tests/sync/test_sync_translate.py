@@ -3,20 +3,20 @@ from typing import Any, Dict, List
 from gpytranslate import SyncTranslator, TranslatedObject
 
 
-def test_sync_translate_auto():
+def test_sync_translate_auto() -> None:
     translator = SyncTranslator()
     translation: TranslatedObject = translator.translate("Ciao Mondo.", targetlang="en")
     assert translation.text == "Hello World.", "Translations are not equal."
 
 
-def test_sync_translate_source():
+def test_sync_translate_source() -> None:
     translator = SyncTranslator()
     translation: TranslatedObject = translator.translate("Ciao.", sourcelang="it", targetlang="en")
 
     assert translation.text in ("Hello.", "HI."), "Translations are not equal."
 
 
-def test_sync_translate_list():
+def test_sync_translate_list() -> None:
     translator = SyncTranslator()
     translations: List[TranslatedObject] = translator.translate(["Ciao Mondo.", "Come stai?"], targetlang="en")
 
@@ -26,7 +26,7 @@ def test_sync_translate_list():
     ], "Translations are not equal."
 
 
-def test_sync_translate_dict():
+def test_sync_translate_dict() -> None:
     translator = SyncTranslator()
     translations: Dict[Any, TranslatedObject] = translator.translate(
         {1: "Ciao Mondo.", 2: "Come stai?"}, targetlang="en"

@@ -7,7 +7,7 @@ from gpytranslate import Translator
 
 
 @pytest.mark.asyncio
-async def test_tts():
+async def test_tts() -> None:
     translator = Translator()
     filename = "test.mp3"
 

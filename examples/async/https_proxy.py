@@ -3,7 +3,7 @@ import asyncio
 from gpytranslate import Translator
 
 
-async def main():
+async def main() -> None:
     t = Translator(proxies={"https://": "https://{proxy_ip_here}"})
     # Check out https://www.python-httpx.org/compatibility/#proxy-keys
     translation = await t.translate("Ciao Mondo!", targetlang="en")

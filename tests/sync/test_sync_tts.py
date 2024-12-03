@@ -4,7 +4,7 @@ import os.path
 from gpytranslate import SyncTranslator
 
 
-def test_sync_tts():
+def test_sync_tts() -> None:
     translator = SyncTranslator()
     filename = "test.mp3"
 
@@ -15,7 +15,7 @@ def test_sync_tts():
     os.remove(filename)
 
 
-def test_sync_tts_bytesio():
+def test_sync_tts_bytesio() -> None:
     translator = SyncTranslator()
     file = io.BytesIO()
 

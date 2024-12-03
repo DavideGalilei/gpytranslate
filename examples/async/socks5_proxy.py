@@ -3,7 +3,7 @@ import asyncio
 from gpytranslate import Translator
 
 
-async def main():
+async def main() -> None:
     t = Translator(proxies={"socks5": "socks5://user:password@127.0.0.1:1080"})
     # Check out https://pypi.org/project/httpx-socks/
     translation = await t.translate("Ciao Mondo!", targetlang="en")

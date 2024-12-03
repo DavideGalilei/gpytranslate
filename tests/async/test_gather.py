@@ -6,7 +6,7 @@ from gpytranslate import Translator
 
 
 @pytest.mark.asyncio
-async def test_gather():
+async def test_gather() -> None:
     translator = Translator()
     tasks = [
         translator.translate("Hello world!", targetlang="it"),

@@ -5,7 +5,7 @@ import aiofiles
 from gpytranslate import Translator
 
 
-async def main():
+async def main() -> None:
     translator = Translator()
 
     async with aiofiles.open("test.mp3", "wb") as file:
