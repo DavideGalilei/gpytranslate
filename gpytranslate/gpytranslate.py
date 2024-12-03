@@ -3,7 +3,11 @@ from collections.abc import Mapping
 from typing import Any, Callable, Dict, List, Optional, TypeVar, Union, overload
 
 import httpx
-from aiofiles.tempfile import AsyncBufferedIOBase
+from typing import Protocol
+
+class AsyncBufferedIOBase(Protocol):
+    async def write(self, data: bytes) -> int: ...
+    async def close(self) -> None: ...
 
 from .exceptions import TranslationError
 from .types import (
@@ -144,8 +148,7 @@ class Translator(BaseTranslator):
                 if proxies.get("socks5h"):
                     proxies["socks5h"] = httpx.AsyncHTTPTransport(proxy=self.proxies["socks5h"])
 
-            async with httpx.AsyncClient(mounts=proxies, **self.options) as http_client:
-                http_client: httpx.AsyncClient
+            async with httpx.AsyncClient(mounts=proxies, **self.options) as client:
                 raw: Union[Mapping, List] = (
                     (
                         await http_client.post(
@@ -206,7 +209,7 @@ class Translator(BaseTranslator):
         chunk_size: int = 1024,
         textlen: Optional[int] = None,
         **extra,
-    ) -> AsyncBufferedIOBase:
+    ) -> Union[AsyncBufferedIOBase, io.BytesIO]:
         params = self.parse_tts(
             client=client,
             targetlang=targetlang,
@@ -234,14 +237,12 @@ class Translator(BaseTranslator):
                     url=self.tts_url,
                     params=params,
                     headers=self.get_headers(),
-                ) as resp:
-                    resp: httpx.Response
+                ) as response:
                     if isinstance(file, io.BytesIO):
-                        async for chunk in resp.aiter_bytes(chunk_size=chunk_size):
+                        async for chunk in response.aiter_bytes(chunk_size=chunk_size):
                             file.write(chunk)
                     else:
-                        file: AsyncBufferedIOBase
-                        async for chunk in resp.aiter_bytes(chunk_size=chunk_size):
+                        async for chunk in response.aiter_bytes(chunk_size=chunk_size):
                             await file.write(chunk)
                 await c.aclose()
 

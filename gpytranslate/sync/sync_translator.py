@@ -223,8 +223,7 @@ class SyncTranslator(BaseTranslator):
                 url=self.tts_url,
                 params=params,
                 headers=self.get_headers(),
-            ) as resp:
-                resp: httpx.Response
+            ) as response:
                 for chunk in resp.iter_bytes(chunk_size=chunk_size):
                     file.write(chunk)
             return file
