@@ -1,7 +1,5 @@
-import random
-
-from .translated_object import TranslatedObject
 from .base_translator import BaseTranslator
+from .translated_object import TranslatedObject
 
 DEFAULT_TRANSLATION_ENDPOINT: str = "https://translate.google.com/translate_a/single"
 DEFAULT_TTS_ENDPOINT: str = "https://translate.google.com/translate_tts"
@@ -39,8 +37,7 @@ class Device:
 
 
 def get_base_headers() -> dict:
-    return {
-        "User-Agent": "GoogleTranslate/6.28.0.05.421483610 ({device})".format(
-            device=Device.shift(),
-        )
-    }
+    return {"User-Agent": f"GoogleTranslate/6.28.0.05.421483610 ({Device.shift()})"}
+
+
+__all__ = ["BaseTranslator", "TranslatedObject", "DEFAULT_TRANSLATION_ENDPOINT", "DEFAULT_TTS_ENDPOINT", "Device", "get_base_headers"]
