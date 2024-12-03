@@ -6,7 +6,7 @@ DEFAULT_TTS_ENDPOINT: str = "https://translate.google.com/translate_tts"
 
 
 class Device:
-    DEVICES: tuple = (
+    DEVICES: tuple[str, ...] = (
         "Linux; U; Android 10; Pixel 4",
         "Linux; U; Android 10; Pixel 4 XL",
         "Linux; U; Android 10; Pixel 4a",
@@ -36,7 +36,7 @@ class Device:
         return cls.DEVICES[cls.__i]
 
 
-def get_base_headers() -> dict:
+def get_base_headers() -> dict[str, str]:
     return {"User-Agent": f"GoogleTranslate/6.28.0.05.421483610 ({Device.shift()})"}
 
 
