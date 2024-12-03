@@ -32,11 +32,11 @@ class Translator(BaseTranslator):
         **options: Any,
     ) -> None:
         """Initialize the translator.
-        
+
         Args:
             proxies: Optional proxy configuration dictionary
             url: Translation API endpoint URL
-            tts_url: Text-to-speech API endpoint URL 
+            tts_url: Text-to-speech API endpoint URL
             headers: Custom headers or header generator function
             **options: Additional options passed to httpx.AsyncClient
         """
@@ -215,13 +215,13 @@ class Translator(BaseTranslator):
         targetlang: str = "en",
         client: str = "at",
         idx: int = 0,
-        prev: str = "input", 
+        prev: str = "input",
         chunk_size: int = 1024,
         textlen: Optional[int] = None,
         **extra: Any,
     ) -> Union[AsyncBufferedIOBase, io.BytesIO]:
         """Generate text-to-speech audio.
-        
+
         Args:
             text: Text to convert to speech
             file: Output file or buffer
@@ -232,10 +232,10 @@ class Translator(BaseTranslator):
             chunk_size: Download chunk size
             textlen: Override text length
             **extra: Additional TTS parameters
-            
+
         Returns:
             The output file/buffer with audio data
-            
+
         Raises:
             TranslationError: If TTS generation fails
             ValueError: If targetlang is invalid

@@ -2,8 +2,8 @@ import pytest
 
 from gpytranslate import Translator
 
-
 """Tests for the async language detection functionality."""
+
 
 @pytest.mark.asyncio
 async def test_detect() -> None:

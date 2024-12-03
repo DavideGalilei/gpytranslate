@@ -4,8 +4,8 @@ import aiofiles
 
 from gpytranslate import Translator
 
-
 """Example showing how to use text-to-speech functionality."""
+
 
 async def main() -> None:
     """Demonstrate text-to-speech generation."""

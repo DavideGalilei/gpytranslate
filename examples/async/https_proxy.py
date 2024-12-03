@@ -2,8 +2,8 @@ import asyncio
 
 from gpytranslate import Translator
 
-
 """Example showing how to use HTTPS proxy with the translator."""
+
 
 async def main() -> None:
     """Demonstrate translation using an HTTPS proxy."""

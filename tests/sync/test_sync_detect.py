@@ -1,7 +1,7 @@
 from gpytranslate import SyncTranslator
 
-
 """Tests for the synchronous language detection functionality."""
+
 
 def test_sync_detect() -> None:
     """Test that language detection works correctly for Italian text."""

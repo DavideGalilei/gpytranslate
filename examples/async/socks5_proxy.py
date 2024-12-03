@@ -2,8 +2,8 @@ import asyncio
 
 from gpytranslate import Translator
 
-
 """Example showing how to use SOCKS5 proxy with the translator."""
+
 
 async def main() -> None:
     """Demonstrate translation using a SOCKS5 proxy."""

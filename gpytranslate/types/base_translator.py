@@ -33,16 +33,16 @@ class BaseTranslator:
         dt: str,
     ) -> Union[TranslatedObject, Dict[K, TranslatedObject], List[TranslatedObject]]:
         """Check and validate translation API response.
-        
+
         Args:
             text: Original input text
             raw: Raw API response data
             client: API client identifier
             dt: Response data type
-            
+
         Returns:
             Parsed translation result(s)
-            
+
         Raises:
             TranslationError: If response validation fails
         """

@@ -2,8 +2,8 @@ import asyncio
 
 from gpytranslate import Translator
 
-
 """Example showing basic translation and language detection."""
+
 
 async def main() -> None:
     """Demonstrate translation from Italian to English and language detection."""

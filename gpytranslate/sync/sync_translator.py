@@ -176,9 +176,7 @@ class SyncTranslator(BaseTranslator):
             raise TranslationError(e) from None
 
     def detect(
-        self, 
-        text: Union[str, List[Any], Dict[Any, Any]], 
-        **kwargs: Any
+        self, text: Union[str, List[Any], Dict[Any, Any]], **kwargs: Any
     ) -> Union[str, List[str], Dict[Any, str]]:
         if isinstance(text, str):
             return self(text).lang

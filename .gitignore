@@ -2,3 +2,5 @@
 /.idea/
 /gpytranslate.egg-info/
 **/__pycache__
+.aider*
+.env
