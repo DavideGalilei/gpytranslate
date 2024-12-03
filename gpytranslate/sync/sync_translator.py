@@ -21,14 +21,14 @@ class SyncTranslator(BaseTranslator):
         proxies: Optional[Dict[str, str]] = None,
         url: str = DEFAULT_TRANSLATION_ENDPOINT,
         tts_url: str = DEFAULT_TTS_ENDPOINT,
-        headers: Union[dict, Callable[[], dict]] = ...,
+        headers: Optional[Union[dict, Callable[[], dict]]] = None,
         **options,
     ):
         self.url = url
         self.tts_url = tts_url
         self.proxies = proxies
         self.options = options
-        self.headers = get_base_headers if headers is Ellipsis else headers
+        self.headers = get_base_headers if headers is None else headers
 
     @overload
     def translate(
@@ -223,8 +223,8 @@ class SyncTranslator(BaseTranslator):
                 url=self.tts_url,
                 params=params,
                 headers=self.get_headers(),
-            ) as response:
-                response: httpx.Response
+            ) as resp:
+                resp: httpx.Response
                 for chunk in response.iter_bytes(chunk_size=chunk_size):
                     file.write(chunk)
             return file

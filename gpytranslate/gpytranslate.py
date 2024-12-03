@@ -3,7 +3,7 @@ from collections.abc import Mapping
 from typing import Any, Callable, Dict, List, Optional, TypeVar, Union, overload
 
 import httpx
-from aiofiles.threadpool import AsyncBufferedIOBase
+from aiofiles.tempfile import AsyncBufferedIOBase
 
 from .exceptions import TranslationError
 from .types import (
@@ -23,14 +23,14 @@ class Translator(BaseTranslator):
         proxies: Optional[Dict[str, str]] = None,
         url: str = DEFAULT_TRANSLATION_ENDPOINT,
         tts_url: str = DEFAULT_TTS_ENDPOINT,
-        headers: Union[dict, Callable[[], dict]] = ...,
+        headers: Optional[Union[dict, Callable[[], dict]]] = None,
         **options,
     ):
         self.url = url
         self.tts_url = tts_url
         self.proxies = proxies
         self.options = options
-        self.headers = get_base_headers if headers is Ellipsis else headers
+        self.headers = get_base_headers if headers is None else headers
 
     @overload
     async def translate(
@@ -144,11 +144,11 @@ class Translator(BaseTranslator):
                 if proxies.get("socks5h"):
                     proxies["socks5h"] = httpx.AsyncHTTPTransport(proxy=self.proxies["socks5h"])
 
-            async with httpx.AsyncClient(mounts=proxies, **self.options) as client:
-                client: httpx.AsyncClient
+            async with httpx.AsyncClient(mounts=proxies, **self.options) as http_client:
+                http_client: httpx.AsyncClient
                 raw: Union[Mapping, List] = (
                     (
-                        await client.post(
+                        await http_client.post(
                             self.url,
                             params={**params, "q": text},
                             headers=self.get_headers(),
@@ -158,7 +158,7 @@ class Translator(BaseTranslator):
                     else (
                         {
                             k: (
-                                await client.post(
+                                await http_client.post(
                                     self.url,
                                     params={**params, "q": v},
                                     headers=self.get_headers(),
@@ -169,7 +169,7 @@ class Translator(BaseTranslator):
                         if isinstance(text, Mapping)
                         else [
                             (
-                                await client.post(
+                                await http_client.post(
                                     self.url,
                                     params={**params, "q": elem},
                                     headers=self.get_headers(),
@@ -179,9 +179,9 @@ class Translator(BaseTranslator):
                         ]
                     )
                 )
-                await client.aclose()
+                await http_client.aclose()
 
-            return self.check(raw=raw, client=client, dt=dt, text=text)
+            return self.check(raw=raw, client=client_type, dt=dt, text=text)
         except Exception as e:
             raise TranslationError(e) from None
 
