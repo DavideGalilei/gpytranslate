@@ -13,12 +13,20 @@ from .types import (
     get_base_headers,
 )
 
-T = TypeVar("T", str, List[str], Dict[Any, str], Mapping)
+T = TypeVar("T", str, List[str], Dict[Any, str], Mapping[Any, str])
+K = TypeVar("K")
 
 
 class AsyncBufferedIOBase(Protocol):
     async def write(self, data: bytes) -> int: ...
     async def close(self) -> None: ...
+    
+    
+class TranslatorOptions(TypedDict, total=False):
+    timeout: Optional[float]
+    verify: bool
+    cert: Optional[str]
+    trust_env: bool
 
 
 class Translator(BaseTranslator):
@@ -27,9 +35,9 @@ class Translator(BaseTranslator):
         proxies: Optional[Dict[str, str]] = None,
         url: str = DEFAULT_TRANSLATION_ENDPOINT,
         tts_url: str = DEFAULT_TTS_ENDPOINT,
-        headers: Optional[Union[dict, Callable[[], dict]]] = None,
-        **options,
-    ):
+        headers: Optional[Union[Dict[str, str], Callable[[], Dict[str, str]]]] = None,
+        **options: Any,
+    ) -> None:
         self.url = url
         self.tts_url = tts_url
         self.proxies = proxies

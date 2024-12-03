@@ -1,7 +1,10 @@
 from collections.abc import Mapping
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
 
 from .translated_object import TranslatedObject
+
+K = TypeVar('K')
+V = TypeVar('V')
 
 
 class BaseTranslator:
@@ -24,11 +27,11 @@ class BaseTranslator:
 
     def check(
         self,
-        text: Union[str, Mapping, List[str]],
+        text: Union[str, Mapping[K, str], List[str]],
         raw: Union[Mapping[str, Any], List[Any]],
         client: str,
         dt: str,
-    ) -> Union[TranslatedObject, Dict[str, TranslatedObject], List[TranslatedObject]]:
+    ) -> Union[TranslatedObject, Dict[K, TranslatedObject], List[TranslatedObject]]:
         """Check and parse API response based on input type.
 
         Args:
@@ -59,9 +62,9 @@ class BaseTranslator:
         targetlang: str,
         idx: int,
         prev: str,
-        text: Union[str, List[str], Dict[Any, str], Mapping[Any, Any]],
+        text: Union[str, List[str], Dict[Any, str], Mapping[K, str]],
         textlen: Optional[int],
-        extra: dict,
+        extra: Dict[str, Any],
     ) -> Dict[str, Union[str, int]]:
         return {
             k: v
