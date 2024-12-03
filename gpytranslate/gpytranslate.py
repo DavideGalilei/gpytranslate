@@ -1,6 +1,6 @@
 import io
 from collections.abc import Mapping
-from typing import Any, BinaryIO, Callable, Dict, List, Optional, Union, TypeVar, overload
+from typing import Any, Callable, Dict, List, Optional, TypeVar, Union, overload
 
 import httpx
 from aiofiles.threadpool import AsyncBufferedIOBase
@@ -14,8 +14,7 @@ from .types import (
     get_base_headers,
 )
 
-
-T = TypeVar('T', str, List[str], Dict[Any, str], Mapping)
+T = TypeVar("T", str, List[str], Dict[Any, str], Mapping)
 
 
 class Translator(BaseTranslator):
@@ -42,7 +41,7 @@ class Translator(BaseTranslator):
         client: str = "gtx",
         dt: str = "t",
         dj: int = 1,
-        **extra
+        **extra,
     ) -> TranslatedObject: ...
 
     @overload
@@ -54,7 +53,7 @@ class Translator(BaseTranslator):
         client: str = "gtx",
         dt: str = "t",
         dj: int = 1,
-        **extra
+        **extra,
     ) -> List[TranslatedObject]: ...
 
     @overload
@@ -66,7 +65,7 @@ class Translator(BaseTranslator):
         client: str = "gtx",
         dt: str = "t",
         dj: int = 1,
-        **extra
+        **extra,
     ) -> Dict[str, TranslatedObject]: ...
 
     async def translate(

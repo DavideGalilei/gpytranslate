@@ -1,5 +1,5 @@
 from collections.abc import Mapping
-from typing import Any, BinaryIO, Callable, Dict, List, Mapping, Optional, TypeVar, Union, overload
+from typing import Any, BinaryIO, Callable, Dict, List, Optional, TypeVar, Union, overload
 
 import httpx
 
@@ -12,8 +12,7 @@ from ..types import (
     get_base_headers,
 )
 
-
-T = TypeVar('T', str, List[str], Dict[Any, str], Mapping)
+T = TypeVar("T", str, List[str], Dict[Any, str], Mapping)
 
 
 class SyncTranslator(BaseTranslator):
@@ -40,7 +39,7 @@ class SyncTranslator(BaseTranslator):
         client: str = "gtx",
         dt: str = "t",
         dj: int = 1,
-        **extra
+        **extra,
     ) -> TranslatedObject: ...
 
     @overload
@@ -52,7 +51,7 @@ class SyncTranslator(BaseTranslator):
         client: str = "gtx",
         dt: str = "t",
         dj: int = 1,
-        **extra
+        **extra,
     ) -> List[TranslatedObject]: ...
 
     @overload
@@ -64,7 +63,7 @@ class SyncTranslator(BaseTranslator):
         client: str = "gtx",
         dt: str = "t",
         dj: int = 1,
-        **extra
+        **extra,
     ) -> Dict[str, TranslatedObject]: ...
 
     def translate(
