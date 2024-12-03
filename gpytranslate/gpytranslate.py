@@ -1,6 +1,7 @@
 import io
 from collections.abc import Mapping
 from typing import Any, Callable, Dict, List, Optional, Protocol, TypeVar, Union, overload
+from typing_extensions import TypedDict
 
 import httpx
 
