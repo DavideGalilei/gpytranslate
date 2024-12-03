@@ -143,7 +143,8 @@ class SyncTranslator(BaseTranslator):
                 if proxies.get("socks5h"):
                     proxies["socks5h"] = httpx.HTTPTransport(proxy=self.proxies["socks5h"])
 
-            with httpx.Client(mounts=proxies, **self.options) as c:
+            client_options = {k: v for k, v in self.options.items() if k in TranslatorOptions.__annotations__}
+            with httpx.Client(mounts=proxies, **client_options) as c:
                 raw: Union[Mapping[str, Any], List[Any]] = (
                     c.post(
                         self.url,
@@ -177,7 +178,11 @@ class SyncTranslator(BaseTranslator):
         except Exception as e:
             raise TranslationError(e) from None
 
-    def detect(self, text: Union[str, List[Any], Dict[Any, Any]], **kwargs: Any) -> Union[str, List[str], Dict[Any, str]]:
+    def detect(
+        self, 
+        text: Union[str, List[Any], Dict[Any, Any]], 
+        **kwargs: Any
+    ) -> Union[str, List[str], Dict[Any, str]]:
         if isinstance(text, str):
             return self(text).lang
         elif isinstance(text, list):
@@ -197,7 +202,7 @@ class SyncTranslator(BaseTranslator):
         prev: str = "input",
         chunk_size: int = 1024,
         textlen: Optional[int] = None,
-        **extra,
+        **extra: Any,
     ) -> BinaryIO:
         params = self.parse_tts(
             client=client,
