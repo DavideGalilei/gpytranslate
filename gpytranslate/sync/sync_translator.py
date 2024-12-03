@@ -225,7 +225,7 @@ class SyncTranslator(BaseTranslator):
                 headers=self.get_headers(),
             ) as resp:
                 resp: httpx.Response
-                for chunk in response.iter_bytes(chunk_size=chunk_size):
+                for chunk in resp.iter_bytes(chunk_size=chunk_size):
                     file.write(chunk)
             return file
         except Exception as e:

@@ -181,7 +181,7 @@ class Translator(BaseTranslator):
                 )
                 await http_client.aclose()
 
-            return self.check(raw=raw, client=client_type, dt=dt, text=text)
+            return self.check(raw=raw, client=client, dt=dt, text=text)
         except Exception as e:
             raise TranslationError(e) from None
 
