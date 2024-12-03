@@ -149,7 +149,7 @@ class Translator(BaseTranslator):
                 client: httpx.AsyncClient
                 raw: Union[Mapping, List] = (
                     (
-                        await c.post(
+                        await client.post(
                             self.url,
                             params={**params, "q": text},
                             headers=self.get_headers(),
@@ -159,7 +159,7 @@ class Translator(BaseTranslator):
                     else (
                         {
                             k: (
-                                await c.post(
+                                await client.post(
                                     self.url,
                                     params={**params, "q": v},
                                     headers=self.get_headers(),
@@ -170,7 +170,7 @@ class Translator(BaseTranslator):
                         if isinstance(text, Mapping)
                         else [
                             (
-                                await c.post(
+                                await client.post(
                                     self.url,
                                     params={**params, "q": elem},
                                     headers=self.get_headers(),
@@ -180,7 +180,7 @@ class Translator(BaseTranslator):
                         ]
                     )
                 )
-                await c.aclose()
+                await client.aclose()
 
             return self.check(raw=raw, client=client, dt=dt, text=text)
         except Exception as e:
@@ -238,11 +238,11 @@ class Translator(BaseTranslator):
                 ) as resp:
                     resp: httpx.Response
                     if isinstance(file, io.BytesIO):
-                        async for chunk in response.aiter_bytes(chunk_size=chunk_size):
+                        async for chunk in resp.aiter_bytes(chunk_size=chunk_size):
                             file.write(chunk)
                     else:
                         file: AsyncBufferedIOBase
-                        async for chunk in response.aiter_bytes(chunk_size=chunk_size):
+                        async for chunk in resp.aiter_bytes(chunk_size=chunk_size):
                             await file.write(chunk)
                 await c.aclose()
 

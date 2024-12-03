@@ -1,5 +1,5 @@
 from collections.abc import Mapping
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from .translated_object import TranslatedObject
 
