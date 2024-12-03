@@ -54,7 +54,7 @@ class Translator(BaseTranslator):
         client: str = "gtx",
         dt: str = "t",
         dj: int = 1,
-        **extra,
+        **extra: Any,
     ) -> TranslatedObject: ...
 
     @overload
@@ -66,7 +66,7 @@ class Translator(BaseTranslator):
         client: str = "gtx",
         dt: str = "t",
         dj: int = 1,
-        **extra,
+        **extra: Any,
     ) -> List[TranslatedObject]: ...
 
     @overload
@@ -78,12 +78,12 @@ class Translator(BaseTranslator):
         client: str = "gtx",
         dt: str = "t",
         dj: int = 1,
-        **extra,
+        **extra: Any,
     ) -> Dict[str, TranslatedObject]: ...
 
     async def translate(
         self,
-        text: Union[str, List[str], Dict[Any, str], Mapping],
+        text: Union[str, List[str], Dict[Any, str], Mapping[K, str]],
         sourcelang: str = "auto",
         targetlang: str = "en",
         client: str = "gtx",
@@ -197,7 +197,7 @@ class Translator(BaseTranslator):
         except Exception as e:
             raise TranslationError(e) from None
 
-    async def detect(self, text: Union[str, list, dict]):
+    async def detect(self, text: Union[str, List[Any], Dict[Any, Any]]) -> Union[str, List[str], Dict[Any, str]]:
         if isinstance(text, str):
             return (await self(text)).lang
         elif isinstance(text, list):
@@ -209,7 +209,7 @@ class Translator(BaseTranslator):
 
     async def tts(
         self,
-        text: Union[str, List[str], Dict[Any, str], Mapping],
+        text: Union[str, List[str], Dict[Any, str], Mapping[K, str]],
         file: Union[AsyncBufferedIOBase, io.BytesIO],
         targetlang: str = "en",
         client: str = "at",
