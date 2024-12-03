@@ -224,7 +224,7 @@ class SyncTranslator(BaseTranslator):
                 params=params,
                 headers=self.get_headers(),
             ) as response:
-                for chunk in resp.iter_bytes(chunk_size=chunk_size):
+                for chunk in response.iter_bytes(chunk_size=chunk_size):
                     file.write(chunk)
             return file
         except Exception as e:

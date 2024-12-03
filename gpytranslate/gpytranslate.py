@@ -151,7 +151,7 @@ class Translator(BaseTranslator):
             async with httpx.AsyncClient(mounts=proxies, **self.options) as client:
                 raw: Union[Mapping, List] = (
                     (
-                        await http_client.post(
+                        await client.post(
                             self.url,
                             params={**params, "q": text},
                             headers=self.get_headers(),
@@ -161,7 +161,7 @@ class Translator(BaseTranslator):
                     else (
                         {
                             k: (
-                                await http_client.post(
+                                await client.post(
                                     self.url,
                                     params={**params, "q": v},
                                     headers=self.get_headers(),
@@ -172,7 +172,7 @@ class Translator(BaseTranslator):
                         if isinstance(text, Mapping)
                         else [
                             (
-                                await http_client.post(
+                                await client.post(
                                     self.url,
                                     params={**params, "q": elem},
                                     headers=self.get_headers(),
@@ -182,7 +182,7 @@ class Translator(BaseTranslator):
                         ]
                     )
                 )
-                await http_client.aclose()
+                await client.aclose()
 
             return self.check(raw=raw, client=client, dt=dt, text=text)
         except Exception as e:
