@@ -19,6 +19,7 @@ def test_sync_tts() -> None:
 
 
 def test_sync_tts_bytesio() -> None:
+    """Test TTS output to BytesIO buffer."""
     translator = SyncTranslator()
     file = io.BytesIO()
 
