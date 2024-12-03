@@ -1,8 +1,6 @@
 import io
 from collections.abc import Mapping
 from typing import Any, Callable, Dict, List, Optional, Protocol, Tuple, TypeVar, Union, overload
-from typing_extensions import TypedDict
-
 import httpx
 
 from .exceptions import TranslationError
@@ -25,21 +23,6 @@ class AsyncBufferedIOBase(Protocol):
     
 from httpx import Auth, Limits, Proxy, Timeout, URL
 
-class TranslatorOptions(TypedDict, total=False):
-    auth: Optional[Union[Tuple[str, str], Auth]]
-    params: Optional[Dict[str, Any]]
-    headers: Optional[Dict[str, str]]
-    cookies: Optional[Dict[str, str]]
-    verify: Union[bool, str]
-    cert: Optional[Union[str, Tuple[str, str]]]
-    http1: bool
-    http2: bool
-    proxies: Optional[Union[str, Proxy]]
-    timeout: Optional[Union[float, Timeout]]
-    limits: Optional[Limits]
-    max_redirects: int
-    trust_env: bool
-
 
 class Translator(BaseTranslator):
     def __init__(
@@ -48,7 +31,7 @@ class Translator(BaseTranslator):
         url: str = DEFAULT_TRANSLATION_ENDPOINT,
         tts_url: str = DEFAULT_TTS_ENDPOINT,
         headers: Optional[Union[Dict[str, str], Callable[[], Dict[str, str]]]] = None,
-        **options: TranslatorOptions,
+        **options: Any,
     ) -> None:
         self.url = url
         self.tts_url = tts_url
@@ -168,8 +151,7 @@ class Translator(BaseTranslator):
                 if proxies.get("socks5h"):
                     proxies["socks5h"] = httpx.AsyncHTTPTransport(proxy=self.proxies["socks5h"])
 
-            client_options = {k: v for k, v in self.options.items() if k in TranslatorOptions.__annotations__}
-            async with httpx.AsyncClient(mounts=proxies, **client_options) as http_client:
+            async with httpx.AsyncClient(mounts=proxies, **self.options) as http_client:
                 raw: Union[Mapping[str, Any], List[Any]] = (
                     (
                         await http_client.post(

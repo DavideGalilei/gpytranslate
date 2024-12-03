@@ -1,8 +1,6 @@
 from collections.abc import Mapping
 from typing import Any, BinaryIO, Callable, Dict, List, Optional, TypeVar, Union, overload
 
-from ..gpytranslate import TranslatorOptions
-
 import httpx
 
 from ..exceptions import TranslationError
@@ -24,7 +22,7 @@ class SyncTranslator(BaseTranslator):
         url: str = DEFAULT_TRANSLATION_ENDPOINT,
         tts_url: str = DEFAULT_TTS_ENDPOINT,
         headers: Optional[Union[Dict[str, str], Callable[[], Dict[str, str]]]] = None,
-        **options: TranslatorOptions,
+        **options: Any,
     ) -> None:
         self.url = url
         self.tts_url = tts_url
@@ -143,8 +141,7 @@ class SyncTranslator(BaseTranslator):
                 if proxies.get("socks5h"):
                     proxies["socks5h"] = httpx.HTTPTransport(proxy=self.proxies["socks5h"])
 
-            client_options = {k: v for k, v in self.options.items() if k in TranslatorOptions.__annotations__}
-            with httpx.Client(mounts=proxies, **client_options) as c:
+            with httpx.Client(mounts=proxies, **self.options) as c:
                 raw: Union[Mapping[str, Any], List[Any]] = (
                     c.post(
                         self.url,
