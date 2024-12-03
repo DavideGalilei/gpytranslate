@@ -12,7 +12,7 @@ from ..types import (
     get_base_headers,
 )
 
-T = TypeVar("T", str, List[str], Dict[Any, str], Mapping)
+T = TypeVar("T", str, List[str], Dict[Any, str], Mapping[str, str])
 
 
 class SyncTranslator(BaseTranslator):
@@ -21,8 +21,8 @@ class SyncTranslator(BaseTranslator):
         proxies: Optional[Dict[str, str]] = None,
         url: str = DEFAULT_TRANSLATION_ENDPOINT,
         tts_url: str = DEFAULT_TTS_ENDPOINT,
-        headers: Optional[Union[dict, Callable[[], dict]]] = None,
-        **options,
+        headers: Optional[Union[Dict[str, str], Callable[[], Dict[str, str]]]] = None,
+        **options: Any,
     ):
         self.url = url
         self.tts_url = tts_url
@@ -175,7 +175,7 @@ class SyncTranslator(BaseTranslator):
         except Exception as e:
             raise TranslationError(e) from None
 
-    def detect(self, text: Union[str, list, dict]):
+    def detect(self, text: Union[str, List[Any], Dict[Any, Any]]) -> Union[str, List[str], Dict[Any, str]]:
         if isinstance(text, str):
             return self(text).lang
         elif isinstance(text, list):
@@ -187,7 +187,7 @@ class SyncTranslator(BaseTranslator):
 
     def tts(
         self,
-        text: Union[str, List[str], Dict[Any, str], Mapping],
+        text: Union[str, List[str], Dict[Any, str], Mapping[str, str]],
         file: BinaryIO,
         targetlang: str = "en",
         client: str = "at",

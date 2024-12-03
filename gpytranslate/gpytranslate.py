@@ -83,7 +83,7 @@ class Translator(BaseTranslator):
 
     async def translate(
         self,
-        text: Union[str, List[str], Dict[Any, str], Mapping[K, str]],
+        text: Union[str, List[str], Dict[Any, str], Mapping[str, str]],
         sourcelang: str = "auto",
         targetlang: str = "en",
         client: str = "gtx",
