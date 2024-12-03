@@ -7,7 +7,7 @@ def test_sync_translate_auto() -> None:
     """Test automatic language detection and translation from Italian to English."""
     translator = SyncTranslator()
     translation: TranslatedObject = translator.translate("Ciao Mondo.", targetlang="en")
-    assert translation.text == "Hello World.", "Translations are not equal."
+    assert translation.text == "Hello World.", "Expected 'Hello World.' but got different translation"
 
 
 def test_sync_translate_source() -> None:

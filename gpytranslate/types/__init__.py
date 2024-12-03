@@ -31,6 +31,11 @@ class Device:
 
     @classmethod
     def shift(cls) -> str:
+        """Get next device string in rotation.
+        
+        Returns:
+            str: Next device user agent string
+        """
         cls.__i += 1
         cls.__i %= len(cls.DEVICES)
         return cls.DEVICES[cls.__i]

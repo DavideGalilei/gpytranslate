@@ -10,7 +10,7 @@ async def test_translate_auto() -> None:
     """Test automatic language detection and translation from Italian to English."""
     translator = Translator()
     translation: TranslatedObject = await translator.translate("Ciao Mondo.", targetlang="en")
-    assert translation.text == "Hello World.", "Translations are not equal."
+    assert translation.text == "Hello World.", "Expected 'Hello World.' but got different translation"
 
 
 @pytest.mark.asyncio

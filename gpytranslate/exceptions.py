@@ -24,4 +24,4 @@ class TranslationError(GpytranslateException):
         Returns:
             str: Formatted error message with the underlying exception
         """
-        return f"An error occurred while trying to translate/tts: {self.args[0]!r}"
+        return f"Translation/TTS operation failed: {self.args[0]!r}"
