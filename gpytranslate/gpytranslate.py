@@ -1,59 +1,73 @@
-"""
-    gpytranslate - A Python3 library for translating text using Google Translate API.
-    MIT License
-
-    Copyright (c) 2023 Davide Galilei
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
-"""
 import io
-
 from collections.abc import Mapping
-from typing import Union, Dict, List, Any
+from typing import Any, Dict, List, Optional, Union, TypeVar, overload
 
 import httpx
 from aiofiles.threadpool import AsyncBufferedIOBase
 
 from .exceptions import TranslationError
 from .types import (
-    TranslatedObject,
-    BaseTranslator,
-    get_base_headers,
     DEFAULT_TRANSLATION_ENDPOINT,
     DEFAULT_TTS_ENDPOINT,
+    BaseTranslator,
+    TranslatedObject,
+    get_base_headers,
 )
+
+
+T = TypeVar('T', str, List[str], Dict[Any, str], Mapping)
 
 
 class Translator(BaseTranslator):
     def __init__(
         self,
-        proxies: Dict[str, str] = None,
+        proxies: Optional[Dict[str, str]] = None,
         url: str = DEFAULT_TRANSLATION_ENDPOINT,
         tts_url: str = DEFAULT_TTS_ENDPOINT,
         headers: Union[dict, callable] = ...,
-        **options
+        **options,
     ):
         self.url = url
         self.tts_url = tts_url
         self.proxies = proxies
         self.options = options
         self.headers = get_base_headers if headers is Ellipsis else headers
+
+    @overload
+    async def translate(
+        self,
+        text: str,
+        sourcelang: str = "auto",
+        targetlang: str = "en",
+        client: str = "gtx",
+        dt: str = "t",
+        dj: int = 1,
+        **extra
+    ) -> TranslatedObject: ...
+
+    @overload
+    async def translate(
+        self,
+        text: List[str],
+        sourcelang: str = "auto",
+        targetlang: str = "en",
+        client: str = "gtx",
+        dt: str = "t",
+        dj: int = 1,
+        **extra
+    ) -> List[TranslatedObject]: ...
+
+    @overload
+    async def translate(
+        self,
+        text: Dict[Any, str],
+        sourcelang: str = "auto",
+        targetlang: str = "en",
+        client: str = "gtx",
+        dt: str = "t",
+        dj: int = 1,
+        **extra
+    ) -> Dict[str, TranslatedObject]: ...
 
     async def translate(
         self,
@@ -65,9 +79,8 @@ class Translator(BaseTranslator):
         # Literal["t", "at", "rm", "bd", "md", "ss", "ex", "rw", "dj"] = "t",
         # broken compatibility with python <3.8 :(
         dj: int = 1,
-        **extra
+        **extra,
     ) -> Union[TranslatedObject, List[TranslatedObject], Dict[str, TranslatedObject]]:
-
         """
         A function that translates text.
 
@@ -121,7 +134,18 @@ class Translator(BaseTranslator):
             if v is not None
         }
         try:
-            async with httpx.AsyncClient(proxies=self.proxies, **self.options) as c:
+            proxies: Dict[str, httpx.AsyncHTTPTransport] = {}
+            if self.proxies:
+                if proxies.get("https"):
+                    proxies["https"] = httpx.AsyncHTTPTransport(proxy=self.proxies["https"])
+                if proxies.get("http"):
+                    proxies["http"] = httpx.AsyncHTTPTransport(proxy=self.proxies["http"])
+                if proxies.get("socks5"):
+                    proxies["socks5"] = httpx.AsyncHTTPTransport(proxy=self.proxies["socks5"])
+                if proxies.get("socks5h"):
+                    proxies["socks5h"] = httpx.AsyncHTTPTransport(proxy=self.proxies["socks5h"])
+
+            async with httpx.AsyncClient(mounts=proxies, **self.options) as c:
                 c: httpx.AsyncClient
                 raw: Union[Mapping, List] = (
                     (
@@ -181,8 +205,8 @@ class Translator(BaseTranslator):
         idx: int = 0,
         prev: str = "input",
         chunk_size: int = 1024,
-        textlen: int = None,
-        **extra
+        textlen: Optional[int] = None,
+        **extra,
     ) -> AsyncBufferedIOBase:
         params = self.parse_tts(
             client=client,
@@ -194,7 +218,18 @@ class Translator(BaseTranslator):
             extra=extra,
         )
         try:
-            async with httpx.AsyncClient(proxies=self.proxies, **self.options) as c:
+            proxies: Dict[str, httpx.AsyncHTTPTransport] = {}
+            if self.proxies:
+                if proxies.get("https"):
+                    proxies["https"] = httpx.AsyncHTTPTransport(proxy=self.proxies["https"])
+                if proxies.get("http"):
+                    proxies["http"] = httpx.AsyncHTTPTransport(proxy=self.proxies["http"])
+                if proxies.get("socks5"):
+                    proxies["socks5"] = httpx.AsyncHTTPTransport(proxy=self.proxies["socks5"])
+                if proxies.get("socks5h"):
+                    proxies["socks5h"] = httpx.AsyncHTTPTransport(proxy=self.proxies["socks5h"])
+
+            async with httpx.AsyncClient(mounts=proxies, **self.options) as c:
                 async with c.stream(
                     "GET",
                     url=self.tts_url,
