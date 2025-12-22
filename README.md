@@ -17,13 +17,6 @@ A Python3 library for translating text using Google Translate API.
 ## Quick Start
 
 ### Installation
-
-Requirements:
-- Python 3.9 or higher
-- httpx[socks] >= 0.28.0
-- aiofiles >= 24.1.0
-- typing-extensions >= 4.12.2
-
 Install using pip:
 ```bash
 python3 -m pip install -U gpytranslate

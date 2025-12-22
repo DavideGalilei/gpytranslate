@@ -1,6 +1,7 @@
 /venv/
 /.idea/
 /gpytranslate.egg-info/
+/dist/
 **/__pycache__
 .aider*
 .env
