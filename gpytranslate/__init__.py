@@ -3,7 +3,7 @@ from .gpytranslate import Translator
 from .sync import SyncTranslator
 from .types import TranslatedObject
 
-__version__ = "1.5.1"
+__version__ = "2.1.0"
 __all__ = [
     "Translator",
     "SyncTranslator",
